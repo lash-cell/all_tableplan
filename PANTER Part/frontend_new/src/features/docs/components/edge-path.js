@@ -1,15 +1,53 @@
 import { CORNER_RADIUS } from "./constants";
 const isHorizontal = (s) => s === "l" || s === "r";
-export function anchor(n, side) {
+export function anchor(n, side, offset = 0) {
     const cx = n.x + n.w / 2;
     const cy = n.y + n.h / 2;
     if (side === "l")
-        return { x: n.x, y: cy };
+        return { x: n.x, y: cy + offset };
     if (side === "r")
-        return { x: n.x + n.w, y: cy };
+        return { x: n.x + n.w, y: cy + offset };
     if (side === "t")
-        return { x: cx, y: n.y };
-    return { x: cx, y: n.y + n.h };
+        return { x: cx + offset, y: n.y };
+    return { x: cx + offset, y: n.y + n.h };
+}
+function portOffsets(count, extent) {
+    if (count < 2)
+        return [0];
+    const span = Math.max(0, extent - 32);
+    return Array.from({ length: count }, (_, index) => -span / 2 + span * index / (count - 1));
+}
+export function assignEdgePorts(edges, nodesById) {
+    const groups = new Map();
+    edges.forEach((edge, index) => {
+        for (const [nodeId, side, key, otherId] of [[edge.from, edge.fromSide, "fromOffset", edge.to], [edge.to, edge.toSide, "toOffset", edge.from]]) {
+            const groupKey = JSON.stringify([nodeId, side]);
+            if (!groups.has(groupKey))
+                groups.set(groupKey, []);
+            groups.get(groupKey).push({ index, key, otherId });
+        }
+    });
+    const offsets = new Map();
+    for (const [groupKey, ports] of groups) {
+        const [nodeId, side] = JSON.parse(groupKey);
+        const node = nodesById[nodeId];
+        const values = portOffsets(ports.length, side === "l" || side === "r" ? node.h : node.w);
+        ports.sort((a, b) => {
+            const aNode = nodesById[a.otherId];
+            const bNode = nodesById[b.otherId];
+            const coordinate = side === "l" || side === "r" ? "y" : "x";
+            const size = coordinate === "x" ? "w" : "h";
+            return (aNode[coordinate] + aNode[size] / 2)
+                - (bNode[coordinate] + bNode[size] / 2)
+                || a.index - b.index;
+        });
+        ports.forEach(({ index, key }, portIndex) => {
+            if (!offsets.has(index))
+                offsets.set(index, {});
+            offsets.get(index)[key] = values[portIndex];
+        });
+    }
+    return edges.map((edge, index) => ({ ...edge, ...offsets.get(index) }));
 }
 function orthogonalPoints(a, aSide, b, bSide) {
     const aH = isHorizontal(aSide);
@@ -44,8 +82,10 @@ function roundedPath(pts) {
     const last = pts[pts.length - 1];
     return `${d} L${last.x} ${last.y}`;
 }
-export function buildEdge(a, aSide, b, bSide) {
-    const pts = orthogonalPoints(a, aSide, b, bSide);
+export function buildEdge(a, aSide, b, bSide, via, aOffset = 0, bOffset = 0) {
+    const start = anchor(a, aSide, aOffset);
+    const end = anchor(b, bSide, bOffset);
+    const pts = via ? [start, ...via, end] : orthogonalPoints(start, aSide, end, bSide);
     const label = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
     return { d: roundedPath(pts), label, vertical: pts[0].x === pts[1].x };
 }

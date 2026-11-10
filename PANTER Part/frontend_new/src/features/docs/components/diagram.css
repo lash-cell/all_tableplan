@@ -2,6 +2,14 @@
 .dg-view { position: relative; display: grid; gap: var(--space-4); }
 .dg-scroll { overflow-x: auto; background: var(--color-surface); border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-lg); box-shadow: var(--shadow-1); }
+.dg-controls { display: flex; align-items: center; gap: var(--space-2); }
+.dg-controls button { min-width: 44px; min-height: 44px; padding: 0 var(--space-3); border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text-strong); font: inherit; cursor: pointer; }
+.dg-controls button:hover:not(:disabled) { background: var(--color-primary-50); }
+.dg-controls button:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.dg-controls button:disabled { opacity: 0.55; cursor: not-allowed; }
+.dg-controls output { min-width: 4ch; color: var(--color-text-body); font-size: var(--text-sm); text-align: center; }
+.dg-controls .dg-reset { margin-left: var(--space-1); }
 /* min-width ตั้งจาก DiagramCanvas ตามความกว้าง viewBox ของแต่ละแผนภาพ */
 .dg { display: block; width: 100%; height: auto; font-family: var(--font-body); }
 
@@ -26,6 +34,7 @@
 .dg-edge { fill: none; stroke: var(--color-text-muted); stroke-width: var(--border-width-strong); stroke-linejoin: round; }
 .dg-dashed { stroke-dasharray: 6 5; }
 .dg-arrow { fill: var(--color-text-muted); }
+.dg-flow-dot { fill: #ff1744; stroke: var(--color-surface); stroke-width: 1.5; filter: drop-shadow(0 0 4px #ff1744); pointer-events: none; }
 /* paint-order: ขอบสีพื้นหลังรอบตัวอักษร กันเส้นเชื่อมตัดทับป้ายกำกับ */
 .dg-edge-label { fill: var(--color-text-body); font-size: var(--text-xs); font-weight: var(--weight-medium);
   paint-order: stroke; stroke: var(--color-surface); stroke-width: calc(var(--border-width-strong) * 2); stroke-linejoin: round; }
@@ -39,6 +48,11 @@
 }
 .dg-node.is-selected .dg-shape { stroke-width: calc(var(--border-width-strong) * 2); }
 .dg-node:focus-visible .dg-shape { stroke: var(--color-primary-600); stroke-width: calc(var(--border-width-strong) * 2); }
+.dg-flow-start .dg-shape { animation: dg-flow-start var(--dg-flow-cycle) linear infinite; }
+@keyframes dg-flow-start {
+  0%, 3.75% { filter: drop-shadow(0 0 6px #ff1744); }
+  4.5%, 100% { filter: none; }
+}
 .dg-chip { fill: var(--bg); }
 /* 2px อยู่ในหน่วยกริด 24x24 ของไอคอน (ถูก scale ลงอีกที) ไม่ใช่ขนาดจริงบนหน้าจอ */
 .dg-icon { fill: none; stroke: var(--ink); stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round; }
@@ -50,4 +64,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .dg-shape { transition: none; }
+  .dg-flow-start .dg-shape { animation: none; }
+  .dg-flow-dot { display: none; }
 }

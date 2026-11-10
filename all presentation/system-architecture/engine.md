@@ -13,9 +13,9 @@ object matching the problem JSON contract. The engine accepts that object; it do
 reinterpret source text.
 
 The engine still prepares its own **internal scheduling model** from the accepted object. For example, it expands
-the course records into lesson blocks, shares theory lessons across a year's groups, creates practical lessons
-per group, and prepares search state. This is solver preprocessing, not a second ingest pipeline. The engine also
-checks that its input has the required shape and values before using it.
+the course records into lesson blocks, shares theory lessons across a year's groups, and creates practical lessons
+per group. Node.js checks the input shape and values; Python then builds CP-SAT candidates and constraints. This
+is solver preprocessing, not a second ingest pipeline.
 
 ## Engine process schema
 
@@ -63,7 +63,7 @@ assignments for each lesson and models day shapes, fixed times, group coverage, 
 availability, room types, and workload. Fixed lessons have only their required time candidates.
 
 Unlike the earlier two-phase search design, CP-SAT considers time, teacher, and room assignments together in one
-model. It uses one search worker and a fixed seed for repeatability.
+model, alongside each group's allowed day shape. It uses one search worker and a fixed seed for repeatability.
 
 ### D. Return honest solver outcomes
 
@@ -96,8 +96,9 @@ independent checker again before returning the final result.
 | `invalidInput` | Input data could not be used |
 | `validationFailed` | The engine produced a candidate that failed the checker; this is a system defect |
 
-**Technology:** JavaScript for input checks, analysis, lesson preparation, subprocess bridge, and checker; Python
-3.12.3 with OR-Tools CP-SAT 9.15.6755 for the solver only. Full rules and model details:
+**Technology:** Node.js/JavaScript for input checks, analysis, lesson preparation, subprocess bridge, and checker;
+Python 3.12.3 with OR-Tools CP-SAT 9.15.6755 for the solver only. CP-SAT jointly searches for a feasible schedule;
+score-based improvement and score history are planned, not part of the current integration. Full rules and model details:
 [engine/README.md](../../restart/engine/README.md). Shared input/output fields:
 [shapes.md](../../restart/shapes.md).
 

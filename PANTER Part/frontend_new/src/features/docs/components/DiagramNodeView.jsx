@@ -9,7 +9,7 @@ function Shape({ node }) {
     const rx = shape === "pill" ? h / 2 : NODE_RADIUS;
     return <rect className="dg-shape" x={x} y={y} width={w} height={h} rx={rx}/>;
 }
-export function NodeView({ node, selected, onSelect }) {
+export function NodeView({ node, selected, flowStart, onSelect }) {
     const { x, y, w, h, shape, tint, lines, icon, id } = node;
     const cy = y + h / 2;
     const hasIcon = Boolean(icon) && shape !== "diamond";
@@ -22,7 +22,7 @@ export function NodeView({ node, selected, onSelect }) {
             onSelect(id);
         }
     };
-    return (<g className={`dg-node dg-${shape} dg-tint-${tint}${selected ? " is-selected" : ""}`} role="button" tabIndex={0} aria-pressed={selected} aria-label={lines.join(" ")} onClick={() => onSelect(id)} onKeyDown={onKey}>
+    return (<g className={`dg-node dg-${shape} dg-tint-${tint}${selected ? " is-selected" : ""}${flowStart ? " dg-flow-start" : ""}`} role="button" tabIndex={0} aria-pressed={selected} aria-label={lines.join(" ")} onClick={() => onSelect(id)} onKeyDown={onKey}>
       <Shape node={node}/>
       {hasIcon && icon && (<g aria-hidden="true">
           <rect className="dg-chip" x={x + ICON_INSET} y={cy - ICON_CHIP / 2} width={ICON_CHIP} height={ICON_CHIP} rx={8}/>

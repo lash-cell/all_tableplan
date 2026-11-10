@@ -1,6 +1,7 @@
 # System architecture
 
-> These pages explain the planned system. The application is not implemented in this repository yet.
+> These pages describe the target system. The full local app workflow is not implemented in TimeTableMaker 1.0:
+> persistent runs, score improvement, and the complete export pipeline remain planned.
 
 ## The four parts
 
@@ -20,7 +21,10 @@
     └────────────────────────────── EXPORT ─── views, explains, and downloads results
 ```
 
-SQLite storage supports the app and server. Optional AI is a helper inside ingest only.
+**Target stack:** React + Vite screens; Node.js (plain JavaScript, built-in `node:http` and `node:sqlite`) for the
+local app; Python 3.12.3 + OR-Tools CP-SAT 9.15.6755 only for the solver subprocess. ExcelJS reads `.xlsx` input;
+ExcelJS export is planned. Optional AI (Groq first choice) proposes input interpretations only; it does not
+schedule or verify.
 
 ## Choose a topic
 
@@ -37,8 +41,9 @@ Teacher input
     ▼
 Confirmed problem ──► Engine ──► Checked result ──► Views and files
         │                  │              │
-        └──────────────────┴──────────────┴── stored with SQLite runs
+        └──────────────────┴──────────────┴── stored with SQLite runs (planned)
 ```
 
 The shared field names are defined in [shapes.md](../../restart/shapes.md). `problem.json` and `result.json`
-name the data contracts and test fixture formats; live app state is planned to be stored in SQLite.
+name the data contracts and test fixture formats; live app state and run history are planned for built-in
+`node:sqlite`. SQLite persistence is not implemented in TimeTableMaker 1.0.

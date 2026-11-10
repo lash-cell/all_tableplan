@@ -44,7 +44,7 @@ engine can use. It makes uncertainty visible: unclear values are reviewed, not s
             │
             ▼
      8. CONFIRM AND SAVE
-        review list empty → teacher confirms → save current problem in SQLite
+        review list empty → teacher confirms → save current problem in SQLite (planned)
             │
             ▼
        ENGINE MAY USE CONFIRMED INPUT
@@ -68,7 +68,8 @@ engine can use. It makes uncertainty visible: unclear values are reviewed, not s
 7. **Resolve:** The teacher corrects unclear values. Optional AI may propose interpretations for individual failed
    pieces, but its proposal is validated and must be approved by the teacher.
 8. **Confirm:** The teacher can confirm only when review items are resolved. The server then saves the current
-   problem in SQLite. Generation requires confirmed data.
+   problem in SQLite (planned; persistence is not implemented in TimeTableMaker 1.0). Generation requires
+   confirmed data.
 
 ## Fallback path
 
