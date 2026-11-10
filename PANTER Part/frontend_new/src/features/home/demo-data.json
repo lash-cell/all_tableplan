@@ -8,7 +8,7 @@
   },
   "summary": [
     { "tint": "mint", "icon": "book", "value": 12, "label": "รายวิชา (ตัวอย่าง)" },
-    { "tint": "lavender", "icon": "user", "value": 0, "label": "ข้อมูลครูไม่มีในตัวอย่าง" },
+    { "tint": "lavender", "icon": "user", "value": 4, "label": "ครูที่พร้อมใช้งาน" },
     { "tint": "butter", "icon": "clock", "value": 34, "label": "คาบเรียน (ตัวอย่าง)" },
     { "tint": "rose", "icon": "warn", "value": 0, "label": "ข้อขัดแย้ง (ตัวอย่างเท่านั้น)" }
   ],
@@ -18,18 +18,21 @@
     { "tint": "rose", "label": "กิจกรรม" },
     { "tint": "slate", "label": "พัก (ตัวอย่างคาบ 5)" }
   ],
+  "rooms": ["A1/2", "A1/3", "B2/2", "B2/1"],
+  "studentGroups": ["ม.1-A", "ม.1-B", "ม.2-A"],
+  "teachers": ["ครู A", "ครู B", "ครู C", "ครู D"],
   "lessons": [
-    { "day": 0, "start": 1, "end": 2, "category": "general", "code": "DEMO-01", "name": "วิชาสามัญตัวอย่าง", "room": "ห้องตัวอย่าง", "fixed": true },
-    { "day": 0, "start": 3, "end": 4, "category": "department", "code": "DEMO-02", "name": "วิชาแผนกตัวอย่าง", "room": "ห้องตัวอย่าง" },
-    { "day": 0, "start": 6, "end": 9, "category": "department", "code": "DEMO-03", "name": "ปฏิบัติการตัวอย่าง", "room": "ห้องปฏิบัติการตัวอย่าง" },
-    { "day": 1, "start": 1, "end": 2, "category": "general", "code": "DEMO-04", "name": "วิชาสามัญตัวอย่าง", "room": "ห้องตัวอย่าง" },
-    { "day": 1, "start": 3, "end": 4, "category": "department", "code": "DEMO-05", "name": "วิชาแผนกตัวอย่าง", "room": "ห้องตัวอย่าง" },
-    { "day": 1, "start": 6, "end": 7, "category": "general", "code": "DEMO-06", "name": "วิชาเลือกตัวอย่าง", "room": "ห้องตัวอย่าง" },
-    { "day": 2, "start": 1, "end": 4, "category": "department", "code": "DEMO-07", "name": "ปฏิบัติการตัวอย่าง", "room": "ห้องปฏิบัติการตัวอย่าง" },
-    { "day": 2, "start": 6, "end": 9, "category": "department", "code": "DEMO-08", "name": "วิชาแผนกตัวอย่าง", "room": "ห้องคอมพิวเตอร์ตัวอย่าง" },
-    { "day": 3, "start": 1, "end": 4, "category": "department", "code": "DEMO-09", "name": "วิชาแผนกตัวอย่าง", "room": "ห้องปฏิบัติการตัวอย่าง" },
-    { "day": 3, "start": 6, "end": 7, "category": "activity", "code": "DEMO-10", "name": "กิจกรรมตัวอย่าง", "room": "ห้องตัวอย่าง", "fixed": true },
-    { "day": 4, "start": 1, "end": 4, "category": "department", "code": "DEMO-11", "name": "วิชาแผนกตัวอย่าง", "room": "ห้องคอมพิวเตอร์ตัวอย่าง" },
-    { "day": 4, "start": 6, "end": 7, "category": "general", "code": "DEMO-12", "name": "วิชาเลือกตัวอย่าง", "room": "ห้องตัวอย่าง" }
+    { "day": 0, "start": 1, "end": 2, "category": "general", "code": "DEMO-01", "name": "วิชาสามัญตัวอย่าง", "room": "A1/2", "teacher": "ครู A", "group": "ม.1-A", "fixed": true },
+    { "day": 0, "start": 3, "end": 4, "category": "department", "code": "DEMO-02", "name": "วิชาแผนกตัวอย่าง", "room": "A1/3", "teacher": "ครู B", "group": "ม.1-A" },
+    { "day": 0, "start": 6, "end": 9, "category": "department", "code": "DEMO-03", "name": "ปฏิบัติการตัวอย่าง", "room": "B2/2", "teacher": "ครู C", "group": "ม.1-A" },
+    { "day": 1, "start": 1, "end": 2, "category": "general", "code": "DEMO-04", "name": "วิชาสามัญตัวอย่าง", "room": "A1/2", "teacher": "ครู A", "group": "ม.1-A" },
+    { "day": 1, "start": 3, "end": 4, "category": "department", "code": "DEMO-05", "name": "วิชาแผนกตัวอย่าง", "room": "A1/3", "teacher": "ครู B", "group": "ม.1-A" },
+    { "day": 1, "start": 6, "end": 7, "category": "general", "code": "DEMO-06", "name": "วิชาเลือกตัวอย่าง", "room": "B2/1", "teacher": "ครู D", "group": "ม.1-B" },
+    { "day": 2, "start": 1, "end": 4, "category": "department", "code": "DEMO-07", "name": "ปฏิบัติการตัวอย่าง", "room": "B2/2", "teacher": "ครู C", "group": "ม.1-A" },
+    { "day": 2, "start": 6, "end": 9, "category": "department", "code": "DEMO-08", "name": "วิชาแผนกตัวอย่าง", "room": "A1/3", "teacher": "ครู B", "group": "ม.2-A" },
+    { "day": 3, "start": 1, "end": 4, "category": "department", "code": "DEMO-09", "name": "วิชาแผนกตัวอย่าง", "room": "B2/2", "teacher": "ครู C", "group": "ม.1-A" },
+    { "day": 3, "start": 6, "end": 7, "category": "activity", "code": "DEMO-10", "name": "กิจกรรมตัวอย่าง", "room": "A1/2", "teacher": "ครู D", "group": "ม.1-A", "fixed": true },
+    { "day": 4, "start": 1, "end": 4, "category": "department", "code": "DEMO-11", "name": "วิชาแผนกตัวอย่าง", "room": "A1/3", "teacher": "ครู B", "group": "ม.1-A" },
+    { "day": 4, "start": 6, "end": 7, "category": "general", "code": "DEMO-12", "name": "วิชาเลือกตัวอย่าง", "room": "B2/1", "teacher": "ครู D", "group": "ม.1-B" }
   ]
 }

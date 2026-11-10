@@ -3,8 +3,8 @@
   display: grid;
   grid-template-columns: 200px minmax(0, 1fr);
   gap: var(--space-8);
-  width: 80%;
-  max-width: calc(var(--container-max) * 0.8);
+  width: 104%;
+  max-width: calc(var(--container-max) * 1.04);
   zoom: 1.25;
 }
 .doc-toc {
@@ -72,12 +72,12 @@
 .doc-table th, .doc-table td { padding: var(--space-3) var(--space-4); border-bottom: var(--border-width) solid var(--color-border); }
 
 @media (max-width: 1023px) {
-  .doc-layout { grid-template-columns: minmax(0, 1fr); width: 80%; }
+  .doc-layout { grid-template-columns: minmax(0, 1fr); width: 104%; }
   .doc-toc { position: static; }
   .doc-toc ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 767px) {
-  .doc-layout { width: 80%; gap: var(--space-4); }
+  .doc-layout { width: 104%; gap: var(--space-4); }
   .doc-toc ul { grid-template-columns: minmax(0, 1fr); }
   .doc-body { gap: var(--space-4); }
   .doc-body > header, .doc-body > section { padding: var(--space-4); }
