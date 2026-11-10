@@ -1,0 +1,31 @@
+import type { ReactNode } from "react";
+import { NavLink } from "react-router-dom";
+import "../styles/home.css";
+import { Icon, type IconName } from "./Icon";
+
+const NAV: { to: string; label: string; icon: IconName; end?: boolean }[] = [
+  { to: "/", label: "ภาพรวม", icon: "grid", end: true },
+  { to: "/import", label: "นำเข้า", icon: "upload" },
+  { to: "/solve", label: "จัดตาราง", icon: "play" },
+  { to: "/result", label: "ผลลัพธ์", icon: "chart" },
+  { to: "/docs", label: "เอกสาร", icon: "book" },
+];
+
+/** โครงหน้า: SidebarNav 96px (เดสก์ท็อป) / แถบล่าง (<768) ตาม DESIGN_SYSTEM §3–4 */
+export function AppShell({ children }: { children: ReactNode }) {
+  return (
+    <div className="hm-app">
+      <nav className="hm-side" aria-label="เมนูหลัก">
+        <div className="hm-logo" aria-hidden="true">TT</div>
+        {NAV.map((n) => (
+          // NavLink ใส่ aria-current="page" ให้เองเมื่อเป็นหน้าปัจจุบัน
+          <NavLink key={n.to} to={n.to} end={n.end} className="hm-nav">
+            <Icon name={n.icon} />
+            {n.label}
+          </NavLink>
+        ))}
+      </nav>
+      <main className="hm-main">{children}</main>
+    </div>
+  );
+}

@@ -1,0 +1,24 @@
+Tech Stack
+ชั้น	เทคโนโลยี	เหตุผล
+Frontend	React 18, TypeScript, Vite, React Router	ทำหน้า Import / Solve / Result / Student
+สถานะฝั่ง UI	custom store + localStorage (มี schemaVersion)	ไม่ต้องมี session ฝั่งเซิร์ฟเวอร์
+Backend	Node.js 24+, JavaScript ES modules, node:http	ไม่มี dependency เพิ่ม เริ่มเร็ว
+อ่านไฟล์	ExcelJS (.xlsx), pdf.js (PDF ข้อความ), CSV parser เขียนเอง + TextDecoder (UTF-8 / Windows-874)	รองรับไฟล์ไทย
+จัดเก็บ	ไฟล์ในเครื่อง + JSON ไม่ใช้ฐานข้อมูล	ติดตั้งง่าย ใช้เครื่องเดียว
+เอนจินจัดตาราง	JavaScript ล้วน, Constraint Satisfaction + backtracking + MRV + forward checking	deterministic ตรวจสอบได้ ไม่พึ่ง LLM
+ทดสอบ	node --test (backend/engine), เครื่องมือ frontend ยังไม่ระบุ
+ส่งออก	ExcelJS สำหรับ Excel, PDF ยังไม่ตัดสิน (Q18)	สร้างฝั่ง frontend จาก entries
+
+
+System Architecture
+Browser UI (React + TS + Vite)
+  หน้า Import / Solve / Result / Student
+  store + localStorage · มุมมองตาราง 4 แบบ · ส่งออก Excel/PDF
+        │  fetch (Vite proxy: /api → 127.0.0.1:8787)
+        ▼
+Algorithm API (Node.js, http ในตัว)  ← adapter บาง: ตรวจคำขอ + route
+        ▼
+Tools layer (ตรวจคำเรียก เชื่อม route กับงานหลังบ้าน)
+  ├─► Ingest  : ExcelJS · pdf.js · CSV parser → Problem
+  ├─► Storage : data/imports/<importId>/ (original, extraction, problem, metadata)
+  └─► Scheduling engine : NORMALIZE → ANALYZE → PLACE → VALIDATE

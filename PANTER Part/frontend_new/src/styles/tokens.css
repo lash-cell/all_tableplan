@@ -1,0 +1,130 @@
+/* Timetable Maker — design tokens (v0.1, light theme only)
+   Single source of truth in code. Must match DESIGN_SYSTEM.md. Do not add values elsewhere. */
+
+:root {
+  /* ---------- Color: neutral ---------- */
+  --color-canvas: #faf8f5;          /* app background (cream) */
+  --color-surface: #ffffff;         /* cards, panels, sidebar */
+  --color-surface-sunken: #f3f0ec;  /* table header, inset areas */
+  --color-border: #e6e2dc;          /* decorative dividers, card edges */
+  --color-border-input: #8c95a0;    /* input/control boundary (>=3:1 on white) */
+  --color-text-strong: #1f2a37;
+  --color-text-body: #3f4b5a;
+  --color-text-muted: #5f6b7a;
+  --color-text-on-primary: #ffffff;
+  --color-shimmer: rgba(255, 255, 255, 0.7);  /* skeleton highlight */
+
+  /* ---------- Color: primary (teal / mint) ---------- */
+  --color-primary-50: #e6f7f4;
+  --color-primary-100: #ccf0ea;
+  --color-primary-500: #1fb5a0;     /* decorative only: illustrations, big numerals */
+  --color-primary-600: #0e8f80;     /* icons, focus ring, large text (>=3:1 only) */
+  --color-primary-700: #0b7a6e;     /* buttons, links, text on light (>=4.5:1) */
+  --color-primary-800: #095f56;     /* hover/pressed */
+
+  /* ---------- Color: category tints (bg + ink pairs, ink >=4.5:1 on bg) ---------- */
+  --tint-mint-bg: #ddf3ee;      --tint-mint-ink: #0b5f55;      /* ปฏิบัติ · COM */
+  --tint-peach-bg: #fde6da;     --tint-peach-ink: #9a3f17;     /* ปฏิบัติ · LAB */
+  --tint-rose-bg: #f8e3e0;      --tint-rose-ink: #9b2c2c;      /* กิจกรรม/ลูกเสือ */
+  --tint-lavender-bg: #e4e7f4;  --tint-lavender-ink: #3b4a8c;  /* วิชาสามัญ */
+  --tint-butter-bg: #fdf1d2;    --tint-butter-ink: #7a4f00;    /* ทฤษฎีแผนก */
+  --tint-sky-bg: #dcebfa;       --tint-sky-ink: #1d4e89;       /* ข้อมูล/เลือกอยู่ */
+  --tint-slate-bg: #e7e5e2;     --tint-slate-ink: #44403c;     /* อื่น ๆ / ปิดใช้งาน */
+
+  /* ---------- Color: semantic status ---------- */
+  --status-success-bg: #e3f6e8; --status-success-ink: #166534;
+  --status-warning-bg: #fff4db; --status-warning-ink: #8a4b00;
+  --status-danger-bg: #fdecea;  --status-danger-ink: #b42318;
+  --status-info-bg: var(--tint-sky-bg); --status-info-ink: var(--tint-sky-ink);
+
+  /* ---------- Typography ---------- */
+  --font-display: "Prompt", "Noto Sans Thai", system-ui, sans-serif;
+  --font-body: "Sarabun", "Noto Sans Thai", system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --text-xs: 0.75rem;    /* 12 */
+  --text-sm: 0.875rem;   /* 14 */
+  --text-md: 1rem;       /* 16 body */
+  --text-lg: 1.125rem;   /* 18 */
+  --text-xl: 1.25rem;    /* 20 */
+  --text-2xl: 1.5rem;    /* 24 */
+  --text-3xl: 2rem;      /* 32 page greeting */
+  --text-4xl: 2.5rem;    /* 40 big numerals */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.55;  /* Thai needs >=1.5 for stacked vowels/tone marks */
+
+  /* ---------- Spacing (4px base) ---------- */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --space-12: 48px; --space-16: 64px;
+
+  /* ---------- Radius / border / shadow ---------- */
+  --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 24px; --radius-pill: 999px;
+  --border-width: 1px;
+  --border-width-strong: 2px;
+  --shadow-1: 0 1px 2px rgba(31, 42, 55, 0.06);
+  --shadow-2: 0 4px 16px rgba(31, 42, 55, 0.08);
+  --shadow-3: 0 12px 32px rgba(31, 42, 55, 0.12);
+  --focus-ring: 0 0 0 3px #ffffff, 0 0 0 5px var(--color-primary-600);
+
+  /* ---------- z-index ---------- */
+  --z-base: 0; --z-sticky: 10; --z-sidebar: 20; --z-dropdown: 30; --z-dialog: 40; --z-toast: 50;
+
+  /* ---------- Breakpoints (reference; use in @media) ----------
+     sm 640 · md 768 · lg 1024 · xl 1280 · 2xl 1536 */
+
+  /* ---------- Layout ---------- */
+  --sidebar-width: 96px;
+  --context-panel-width: 320px;
+  --container-max: 1200px;
+  --grid-gap: var(--space-6);
+
+  /* ---------- Motion ---------- */
+  --dur-instant: 80ms;
+  --dur-fast: 150ms;
+  --dur-base: 240ms;
+  --dur-slow: 360ms;
+  --dur-emphasis: 600ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);   /* decelerate in */
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);    /* accelerate out */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);   /* small overshoot, success/badge only */
+  --stagger-step: 30ms;
+  --stagger-max: 600ms;                            /* total stagger never exceeds this */
+}
+
+/* ---------- Reduced motion: remove movement, keep state changes ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 1ms; --dur-fast: 1ms; --dur-base: 1ms; --dur-slow: 1ms; --dur-emphasis: 1ms;
+    --stagger-step: 0ms;
+  }
+}
+
+/* ---------- Motion primitives (animate transform/opacity only) ---------- */
+@keyframes tt-fade-up   { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes tt-pop-in    { from { opacity: 0; transform: scale(0.92); }     to { opacity: 1; transform: none; } }
+@keyframes tt-shimmer   { from { transform: translateX(-100%); }           to { transform: translateX(100%); } }
+@keyframes tt-pulse-ring{ 0% { opacity: 0.6; transform: scale(1); }        100% { opacity: 0; transform: scale(1.6); } }
+@keyframes tt-draw      { to { stroke-dashoffset: 0; } }
+@keyframes tt-shake     { 0%,100% { transform: none; } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+.tt-enter  { animation: tt-fade-up var(--dur-base) var(--ease-enter) both; }
+.tt-pop    { animation: tt-pop-in var(--dur-base) var(--ease-pop) both; }
+/* stagger: set style="--i: <index>" on each child; delay is capped by --stagger-max */
+.tt-stagger > * {
+  animation: tt-fade-up var(--dur-base) var(--ease-enter) both;
+  animation-delay: min(calc(var(--i, 0) * var(--stagger-step)), var(--stagger-max));
+}
+.tt-lift { transition: transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard); }
+.tt-lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+.tt-shake { animation: tt-shake var(--dur-base) var(--ease-standard) 2; }
+@media (prefers-reduced-motion: reduce) {
+  .tt-enter, .tt-pop, .tt-stagger > *, .tt-shake { animation: none; }
+  .tt-lift:hover { transform: none; }
+}
