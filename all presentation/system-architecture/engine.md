@@ -2,8 +2,9 @@
 
 ## What this part does
 
-The engine analyzes the confirmed problem, searches for timetable times, assigns rooms and teachers, checks the
-candidate with a separate checker, and improves a valid timetable without breaking hard rules.
+The engine analyzes the confirmed problem in JavaScript, sends the scheduling model to a local Python process
+running OR-Tools CP-SAT, and checks the returned candidate with a separate JavaScript checker. The separate
+improvement stage remains planned; it is not in TimeTableMaker 1.0.
 
 ## Input boundary: ingest vs. engine
 
@@ -22,97 +23,55 @@ checks that its input has the required shape and values before using it.
 CONFIRMED PROBLEM JSON SHAPE
        │
        ▼
-CHECK INPUT SHAPE AND VALUES
+NODE.JS: CHECK INPUT, ANALYZE, PREPARE LESSONS
        │
        ▼
-┌───────────────────────────────┐
-│ A. ANALYZE                    │
-│ Quick arithmetic checks       │
-│ impossible? → explain causes  │
-└──────────────┬────────────────┘
-               │ looks possible
-               ▼
-┌───────────────────────────────┐
-│ B. PREPARE INTERNAL LESSONS   │
-│ theory: shared by year groups │
-│ practical: one per group      │
-└──────────────┬────────────────┘
-               ▼
-┌───────────────────────────────┐
-│ C. PLACE FIXED LESSONS        │
-│ reserve required time slots   │
-└──────────────┬────────────────┘
-               ▼
-┌───────────────────────────────┐
-│ D. SEARCH FOR WHEN            │◄──────────────┐
-│ build group days from period 1│               │
-│ lessons / break / end day     │               │
-│ filter choices, look ahead    │               │
-│ dead end? undo and try next   │               │
-└──────────────┬────────────────┘               │
-               │ candidate times                │
-               ▼                                │
-┌───────────────────────────────┐                │
-│ E. ASSIGN WHERE, THEN WHO     │                │
-│ choose rooms, then teachers   │                │
-└──────────────┬────────────────┘                │
-               │ assignment fails                │
-               └── ask D for another candidate ──┘
-               │ assignment succeeds
-               ▼
-┌───────────────────────────────┐
-│ F. INDEPENDENT CHECKER        │
-│ recompute every hard rule     │
-└───────┬─────────────────┬─────┘
-        │ all pass        │ violation
-        ▼                 ▼
-┌─────────────────┐   ENGINE DEFECT
-│ G. IMPROVE       │   do not report success
-│ lower soft score │
-│ keep hard rules  │
-└────────┬────────┘
-         ▼
-┌───────────────────────────────┐
-│ H. CHECK AGAIN                │
-└───────┬─────────────────┬─────┘
-        │ all pass        │ violation
-        ▼                 ▼
-   FEASIBLE RESULT     ENGINE DEFECT
-   save result         do not show timetable
+PYTHON SUBPROCESS: OR-TOOLS CP-SAT
+JSON over stdin/stdout; build one joint constraint model
+       │
+       ├── time limit without solution ──► SEARCH LIMIT
+       ▼
+candidate with day/start/teacher/room choices
+       │
+       ▼
+JAVASCRIPT INDEPENDENT CHECKER
+       ├── violations ──► ENGINE DEFECT; do not show as success
+       ▼ all hard rules pass
+FEASIBLE RESULT
+       │
+       ▼
+FUTURE: IMPROVEMENT STAGE, THEN CHECK AGAIN
 ```
 
 ## Stages in plain language
 
-### A. Analyze before searching
+### A. Validate and analyze in Node.js
 
-Do fast necessary checks: can lesson lengths fit a day, can groups fit their weekly periods, do fixed lessons clash,
-and are teacher and room totals sufficient? A proven contradiction returns **infeasible** with causes. Passing
+The Node.js side accepts only the confirmed problem data shape, checks its fields, creates internal lesson data,
+and runs fast necessary arithmetic checks. A proven contradiction returns **infeasible** with causes. Passing
 means only **not ruled out**; it does not guarantee a timetable.
 
-### B. Make lesson blocks
+### B. Prepare lessons
 
 Turn course records into lessons. A theory lesson is shared by the groups in that year. A practical lesson is
 made separately for each group. Each course stays one consecutive block.
 
-### C. Reserve fixed lessons
+### C. Build the CP-SAT model in Python
 
-Place lessons with a required day and time before flexible lessons. If fixed lessons overlap or make a valid day
-shape impossible, stop and report why.
+Node launches the local Python solver with the problem and time limit as JSON. The solver creates candidate
+assignments for each lesson and models day shapes, fixed times, group coverage, teacher and room non-overlap,
+availability, room types, and workload. Fixed lessons have only their required time candidates.
 
-### D. Search for times
+Unlike the earlier two-phase search design, CP-SAT considers time, teacher, and room assignments together in one
+model. It uses one search worker and a fixed seed for repeatability.
 
-Build group days from period 1 onward. At each step the search may place a lesson, take the break, or end the day.
-It chooses constrained lessons early, checks whether choices can still work, and backtracks when they cannot.
+### D. Return honest solver outcomes
 
-The search builds a candidate; it does not decide the candidate is valid. It stops at configured limits and reports
-**search limit** honestly when it has not proved infeasibility.
+The solver can return a feasible solution, prove infeasibility, or stop without a solution at its time limit. A
+time-limit result must map to **searchLimit**, not **infeasible**. Invalid solver output or process failure is an
+error, not a timetable.
 
-### E. Assign rooms, then teachers
-
-Once lesson times are chosen, assign available compatible rooms, then available teachers. If either assignment
-fails, return to the time search and ask for another candidate timetable.
-
-### F and H. Independently check
+### E. Independently check
 
 The checker is implemented separately from the search. It recomputes every hard rule, so a bug in the builder is
 less likely to hide in its own validation. A failed check means an engine defect; never call that proof that the
@@ -121,11 +80,11 @@ teacher's input is impossible.
 The checker is also a **development test oracle**: test a valid timetable, break one rule at a time, and ensure the
 correct violation and rule ID are detected.
 
-### G. Improve only after validity
+### F. Future work: improve after validity
 
-Start from a checked timetable. Try changes that lower soft penalties, such as teacher idle time, late finishes,
-and uneven teacher loads. Keep only changes that preserve hard rules. A fixed seed makes the process repeatable.
-Run the independent checker again before returning the final result.
+The planned improvement stage may lower soft penalties, such as teacher idle time, late finishes, and uneven
+teacher loads. It is not implemented in TimeTableMaker 1.0. When added, it must preserve hard rules and run the
+independent checker again before returning the final result.
 
 ## Possible outcomes
 
@@ -137,6 +96,10 @@ Run the independent checker again before returning the final result.
 | `invalidInput` | Input data could not be used |
 | `validationFailed` | The engine produced a candidate that failed the checker; this is a system defect |
 
-**Planned technology:** Plain JavaScript in a Node worker thread. Full rules and search details:
+**Technology:** JavaScript for input checks, analysis, lesson preparation, subprocess bridge, and checker; Python
+3.12.3 with OR-Tools CP-SAT 9.15.6755 for the solver only. Full rules and model details:
 [engine/README.md](../../restart/engine/README.md). Shared input/output fields:
 [shapes.md](../../restart/shapes.md).
+
+The solver time-limit status in TimeTableMaker 1.0 is currently named `timeout`; the Node adapter still needs to
+translate it to the shared contract's `searchLimit`.

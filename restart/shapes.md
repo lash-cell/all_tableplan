@@ -104,7 +104,7 @@ ReviewItem: `{id, section, recordId, field, problem, original}` (original = the 
 | Field | Type | Meaning |
 |---|---|---|
 | status | "ok", "infeasible" or "invalidInput" | |
-| causes | list of {layer, message, refs} | layer 1-3 (engine 3a); empty when ok |
+| causes | list of {layer, message, refs} | layer 1-3 (engine §3); empty when ok |
 | groups | list of {groupId, needed, possibleMin, possibleMax} | periods per week |
 | teachers | {counted, minSum, maxSum} | |
 
@@ -121,14 +121,14 @@ ReviewItem: `{id, section, recordId, field, problem, original}` (original = the 
 ## Result (engine gives, output takes)
 | Field | Type | Meaning |
 |---|---|---|
-| status | "feasible", "infeasible", "searchLimit", "invalidInput" or "validationFailed" | engine 3d |
+| status | "feasible", "infeasible", "searchLimit", "invalidInput" or "validationFailed" | engine §4 |
 | lessons | list of Lesson | only when feasible |
 | analysis | Analysis | always, except invalidInput |
 | report | Report | |
 | scoreHistory | list of {round, total, terms: {S1, S2, S3}} | empty when not feasible |
 | seed | whole number | the improvement step's fixed seed |
 | assumptions | list of text | |
-| stats | {steps, ms, limitHit, rejections: list of {constraint, count}} | limitHit: "", "time" or "steps" |
+| stats | {ms, bridgeMs, solverStatus, wallTimeSeconds, branches, conflicts, variables, constraints} | CP-SAT solver and Node bridge measurements; fields may be empty when solving did not start |
 
 ## Report
 | Field | Type | Meaning |
@@ -137,7 +137,7 @@ ReviewItem: `{id, section, recordId, field, problem, original}` (original = the 
 | violations | list of Violation | |
 | teacherLoads | list of {teacherId, periods, minPeriods, maxPeriods} | |
 | causes | list of text | why no timetable (empty when feasible) |
-| likelyCauses | list of text | suspects from switching rule groups off (engine 3d) |
+| likelyCauses | list of text | suspects from bounded follow-up solves with selected rule groups disabled (engine §4); not proof |
 
 Violation: `{rubricId, constraint, message, groupIds, teacherId, roomId, day, start, end}` (constraint like "H7").
 

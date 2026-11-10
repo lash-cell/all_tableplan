@@ -16,7 +16,7 @@ React + Vite screens
   ▼
 Node.js local server
   ├──► Ingest: read, match, validate, confirm data
-  ├──► Engine worker: check or generate a timetable
+  ├──► Engine bridge: check or launch the Python CP-SAT child process
   ├──► Output: prepare views and reports
   └──► SQLite: load or save the current problem and runs
         │
@@ -29,7 +29,7 @@ Node.js local server
 | Screen | Teacher does | Server work |
 |---|---|---|
 | Data | Enter, upload, paste, review, and confirm data | Ingest and save the problem |
-| Generate | Check feasibility, start or cancel generation | Analyze or manage a worker run |
+| Generate | Check feasibility, start or cancel generation | Analyze or manage a solver process run |
 | Results | View timetables, reports, history, and exports | Load the selected run and prepare output |
 | Settings | Configure optional AI provider and key | Save settings locally; never return the key |
 
@@ -43,23 +43,23 @@ The screens show results; they do not implement scheduling rules. Rule outcomes 
 4. Reads or writes the current problem and run history in SQLite.
 5. Returns a structured response or a file download.
 
-## Generation is a background job
+## Solver runs in a local child process
 
 ```text
-POST /api/runs
+Node.js validates and prepares the request
       │
-      ├── save run as "running"
-      └── start worker ──► engine
-                              │ progress / result / error / exit
-GET /api/runs/{id} ◄─────────┘
-      │
-      ├── still running: show progress; poll again
-      ├── finished: show result
-      └── cancel request: stop worker and mark cancelled
+      ├── analyze input and build lesson data in JavaScript
+      └── spawn local Python process ──► OR-Tools CP-SAT
+                 │ JSON request on stdin
+                 │ JSON result on stdout; diagnostics on stderr
+                 ▼
+          Node.js parses result and runs independent JavaScript checker
 ```
 
-The worker keeps long searches from blocking the server. The server can continue answering requests and can
-cancel a run.
+Node's child-process I/O is asynchronous, so CP-SAT does not block the server event loop. The approved target
+design must handle process errors, non-zero exit, malformed output, time limits, output size, and cancellation.
+TimeTableMaker 1.0 has a local subprocess bridge and solver time limit; the full run-history, polling, cancellation,
+and persistent-run workflow remains planned work.
 
 ## Storage and boundaries
 
@@ -69,6 +69,6 @@ cancel a run.
 - The database and user's AI key belong in the ignored local data folder, not in source control.
 - Errors use a consistent API shape with a safe message; internal details are not sent to the teacher.
 
-The planned stack is Node.js, its built-in HTTP server, worker threads, and `node:sqlite`. Exact SQL tables and
-migrations are not yet designed. See [routes.md](../../restart/app/routes.md) and
-[stack.md](../../restart/stack.md).
+The stack is Node.js, its built-in HTTP server and `node:sqlite`, with Python + OR-Tools CP-SAT only as the local
+solver subprocess. Exact SQL tables and migrations are not yet designed; persistent app storage is not implemented
+in TimeTableMaker 1.0. See [routes.md](../../restart/app/routes.md) and [stack.md](../../restart/stack.md).

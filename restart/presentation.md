@@ -18,19 +18,21 @@
 The times assume a ~12 minute slot; scale them when the real slot is known.
 
 ## 3. System architecture + stack
-In one line: the screens send the teacher's data to one local program, which turns it into the problem data shape,
+Target flow: the screens send the teacher's data to one local program, which turns it into the problem data shape,
 saves it in SQLite, schedules it, checks it, and sends back timetables and files. Everything runs on this computer.
+TimeTableMaker 1.0 has the Node.js app, CP-SAT solver bridge, and independent checker; persistent SQLite runs,
+score improvement, and the complete export pipeline are still planned.
 
 | Part | What it does | Built with | Why |
 |---|---|---|---|
 | Screens | what the teacher sees: Data, Generate, Results | React + Vite | a normal web page; nothing to install but the program |
-| Local server | the one program; passes requests to the parts | Node.js, its built-in web server, 127.0.0.1 only | one language for everything; nobody outside this computer can reach it |
-| Data step | reads uploads, pasted rows and forms into one clean problem object | ExcelJS · word lists in words.json · guideline values in defaults.json | a new synonym or rule value is a file edit, never a code change |
-| problem.json | the one input contract | plain JSON shape, persisted in SQLite | the engine never sees a spreadsheet, so it can't hard-code one |
-| Engine | check, build, assign, check again, improve | plain JavaScript, in a background worker | the screen stays responsive, and a run can be cancelled |
-| result.json | the one output contract | plain JSON shape, persisted with the run in SQLite | every view and export comes from the same checked result |
-| Output | timetable grids, report, Excel, PDF | ExcelJS · a PDF library with a Thai+Latin font | what's on screen and in the files always matches |
-| Storage | current problem and run history | built-in `node:sqlite`, one database in the ignored data folder | local structured storage with no external database package |
+| Local server | the one program; passes requests to the parts | Node.js, its built-in web server, 127.0.0.1 only | local-only access; keeps the app, routes, ingest, and checker in JavaScript |
+| Data step | reads uploads, pasted rows and forms into one clean problem object | Node.js · ExcelJS · words.json · defaults.json | a new synonym or rule value is a file edit, never a code change |
+| problem.json | the one input contract | plain JSON shape; planned SQLite persistence | the engine never sees a spreadsheet, so it can't hard-code one |
+| Engine | analyze and prepare input in JavaScript; solve constraints in OR-Tools CP-SAT; validate with the independent JavaScript checker | Node.js launches a local Python 3.12 / OR-Tools 9.15 subprocess | the constraint solver handles the measured search workload; Python is limited to the solver |
+| result.json | the one output contract | plain JSON shape; planned persistence with each run in SQLite | every view and export comes from the same checked result |
+| Output | timetable grids, report, Excel, PDF | planned ExcelJS export · a PDF library with a Thai+Latin font | what's on screen and in the files always matches; ExcelJS currently reads `.xlsx` input |
+| Storage | planned current problem and run history | built-in `node:sqlite`, one database in the ignored data folder | local structured storage with no external database package; persistence is not implemented in TimeTableMaker 1.0 yet |
 | AI assistant (optional) | proposes values for unreadable parts | a free API (Groq), with the user's own key | helps with messy input; the app works fully without it |
 
 If a spike (stack.md) changes a first choice, change the "Built with" column here too.
@@ -40,17 +42,17 @@ If a spike (stack.md) changes a first choice, change the "Built with" column her
 | Phase | Step | What happens | Why |
 |---|---|---|---|
 | Plan | 1 Check | Counts whether the hours, teachers and rooms can fit at all, before any search. | If it can't fit, we explain why at once instead of searching forever. |
-| Act | 2 Fixed first | Puts the lessons that have only one possible place (activity Thu 6-7, fixed slots) on the grid first. | The hardest-to-place go first (MRV), so nothing else takes their teacher or room. |
-| Act | 3 Build days | Fills each group's day from period 1 to the end: a lesson, the break, or end the day. On a dead end, it undoes the last choice. | The day rules (start at 1, one break, no gaps) can never break, because the moves are built that way. |
-| Act | 4 Who and where | Gives each lesson a teacher and a room. If that fails, it asks step 3 for the next timetable. | Deciding time first, then people, keeps both searches small. |
-| Check | 5 Checker | A separate program re-checks every rule on the finished timetable. | The builder can't vouch for itself; a shared bug would hide in both. |
-| Evaluate | 6 Improve | Scores the timetable (teacher gaps, late finishes, fair loads) and swaps lessons, keeping the better ones. | A valid timetable becomes a good one, and the falling score is the proof. |
+| Act | 2 CP-SAT model | Creates candidate lesson placements and encodes day shape, fixed times, teacher and room assignments, availability, and workload as constraints. | The solver searches the choices together rather than using a separate time-first and resource-assignment phase. |
+| Check | 3 Independent checker | A separate JavaScript program re-checks every hard rule on the solver's result. | The solver cannot vouch for itself; a shared bug would hide in both. |
+| Evaluate | 4 Improve | A later stage may score and improve a verified timetable. | Improvement and score history remain planned work; they are not in TimeTableMaker 1.0 yet. |
 
-### Diagram 2: inside step 3
+### Diagram 2: inside the CP-SAT model
 | Idea | In words |
 |---|---|
-| Three moves | At each period a group can start a lesson, take its break (only in periods 4-6), or end its day. |
-| Earliest group first | The builder always works on the group that is furthest behind, so groups sharing a theory lesson reach the same period together. |
-| Looking ahead | Before each new day it asks "can period 1 still be staffed on the days left?" In the sample, Thursday needs 6 teachers at period 1 but there are 5, so one year must start with a shared lesson; the builder knows this early instead of failing days later. |
+| Candidate | Each lesson has possible day/start, teacher, and room assignments; fixed lessons have only their required time. |
+| Day shape | Boolean choices select a group's day length and one allowed break; lesson placements must cover occupied periods without gaps. |
+| Resource rules | Constraints prevent group, teacher, or room clashes and enforce availability, room type, and teacher workload. |
+| Search limit | CP-SAT runs with a time limit. No solution before the limit is `searchLimit`, not proof of infeasibility. |
 
-Source of truth for these words: engine/README.md. If the engine changes, change this section with it.
+Source of truth for the selected solver and model: engine/README.md and engine/techniques.md. Improvement is still
+future work; update this section when it is implemented.

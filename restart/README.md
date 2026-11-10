@@ -43,8 +43,8 @@ between folders in words; shapes.md holds the exact field names, and is the only
 
 0. Ground: skeleton, spikes, test sets (T0-T5).
 1. data/: just enough to feed the engine (T6-T9).
-2. engine/: the checker first, then analysis, search, who/where, improvement (T10-T17).
-3. Running and output/: worker, views, report, history, Excel, PDF (T18-T22).
+2. engine/: the checker first, then analysis, CP-SAT model and solver bridge, improvement (T10-T17).
+3. Running and output/: solver runs, views, report, history, Excel, PDF (T18-T22).
 4. Routes and the rest of data/: paste, template, guide, AI (T23-T25).
 5. Together: self-check on F1-F5, the partner's screens (T26-T27). Then demo-day.md rehearsals.
 
@@ -76,7 +76,7 @@ One to three tasks per session: short sessions keep a free model's context small
 | Checks | each "done when" check of the tasks, with its REAL output pasted (pass/fail counts as shown) |
 | Assumptions | every one made, or "none" |
 | Questions | open questions in the asking.md format, or "none" |
-| Measured | steps and ms for engine tasks; "n/a" otherwise |
+| Measured | solver status, wall time, branches/conflicts, model size, and bridge time for engine tasks; "n/a" otherwise |
 
 ## The owner's check (before accepting a session)
 1. Only files of the task's folder changed (look at the changed-file list).

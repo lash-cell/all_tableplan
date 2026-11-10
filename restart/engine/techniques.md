@@ -1,7 +1,7 @@
 # Scheduling techniques: what exists, who uses it, how to choose
 
-> Read when: choosing or changing the engine's method. Decision: A (backtracking build) then D (local search
-> improvement). Only section 3 is needed to apply it; sections 1-2 are the reasons.
+> Read when: choosing or changing the engine's method. Decision: E (OR-Tools CP-SAT) for the first valid
+> timetable; a separate improvement stage is planned after a feasible result. Sections 1-2 explain the alternatives.
 
 For agents choosing or changing the engine's method. The design itself is in engine/README.md. Researched 2026-11-09;
 sources at the end. School timetabling is NP-hard (Timefold docs), so no method is fast on every input.
@@ -10,7 +10,7 @@ sources at the end. School timetabling is NP-hard (Timefold docs), so no method 
 
 | # | Family | Idea in one line | Real use case |
 |---|---|---|---|
-| A | Backtracking search + CSP heuristics | build the timetable step by step; on a dead end, undo the last choice. MRV (fewest options first), forward checking (cut a branch as soon as something has no option left) | textbook method. The old plan's version of it placed the sample data in about 160k steps, 0.3 s (one block per course) |
+| A | Backtracking search + CSP heuristics | build the timetable step by step; on a dead end, undo the last choice. MRV (fewest options first), forward checking (cut a branch as soon as something has no option left) | textbook method; an earlier prototype was fast on its test, but the later full F1 implementation missed its time budget (section 4) |
 | B | Heuristic repair ("recursive swapping") | place the hardest activity first; if no slot is free, take the slot with the fewest clashes and re-place the activities it pushed out, a limited number of levels deep | FET, the free school timetabler. Its notes say hardest-first ordering made it "maybe 10 times" faster. Earlier FET versions used a genetic algorithm, which was slower |
 | C | Iterative forward search + conflict statistics | like B, but it remembers which assignments clashed before and avoids them | UniTime (Purdue University). Müller's solver built on it was the ITC 2007 winning entry, the same solver in all three tracks |
 | D | Local search metaheuristics: simulated annealing, tabu search, late acceptance | start from a full timetable and keep making small changes (swap, move), keeping the ones that improve the score | Timefold (hard/soft score: hard rules always outweigh preferences). GOAL, the ITC 2011 high-school winner, was a hybrid local search |
@@ -31,30 +31,30 @@ sources at the end. School timetabling is NP-hard (Timefold docs), so no method 
 
 A method without a proof of impossibility may only say "search limit, not a proof", never "infeasible".
 
-## 3. How to choose (for agents)
+## 3. Selected method
 
-Answer in order. Stop at the first "yes".
+The original JavaScript backtracking search (A) was implemented and measured, but it did not find F1 within its
+time budget. The owner approved E: OR-Tools CP-SAT, called locally by the Node.js application through a Python
+subprocess. The Python boundary is limited to the solver; input handling, analysis, lesson preparation, API, and
+the independent checker remain JavaScript.
 
-1. Is the method for FINDING a first valid timetable?
-   → A, built as in engine/README.md (day builder + constraint filters + lookahead). It's the only library-free method
-     that can also prove "impossible".
-2. Is it for IMPROVING a valid timetable (soft score, R 4.7/4.8 evidence)?
-   → D: simulated annealing or late acceptance on the timetable from A, fixed seed, every move kept valid.
-     Record the score after each round: that history is the R 4.8 graph.
-3. Does A fail to find a timetable within its limits on real data, after the checks in engine/README.md were done?
-   → First report the measurements. Then consider B (repair) as a second construction method, or E if the owner
-     approves a solver library.
-4. Anything else (genetic algorithm, machine learning, an LLM making the timetable)?
-   → Don't. None beats A + D here, and an LLM can't guarantee the hard rules.
+The CP-SAT model jointly chooses a candidate day/start, teacher, and room for each lesson, while enforcing the
+group-day shape and hard constraints. It can prove infeasibility when the solver reports that status. A time limit
+without a solution is not proof and must be reported as a search limit. The current 1.0 integration uses one
+search worker and a fixed seed for repeatability.
 
-### The recommended combination
-A then D, the same pattern Timefold uses and the competition winners resemble (construction, then local search). It
-also maps straight onto the rubric's words:
+After a feasible schedule exists, a separate improvement method remains planned for the soft score and R 4.8
+history. Do not describe that stage as implemented until its task and tests are complete.
+
+### Current combination and remaining work
+E (CP-SAT) is the selected construction and feasibility method. D (a separately measured improvement process) is
+future work; it is not part of the current TimeTableMaker 1.0 solver integration. The phases map to the rubric:
 
 ```
  Plan (R 4.4)  ── analysis: arithmetic checks, "can this fit?"
- Act  (R 4.5)  ── A: build a valid timetable
- Evaluate (R 4.7) and improve (R 4.8) ── D: score it, improve it, show the score history
+ Act  (R 4.5)  ── E: CP-SAT searches for a valid timetable
+ Check         ── the independent JavaScript checker verifies the result
+ Evaluate (R 4.7) and improve (R 4.8) ── planned, not yet implemented
 ```
 
 ## 4. Already measured on this project's data (old plan, one-block model)
@@ -64,7 +64,7 @@ also maps straight onto the rubric's words:
 | Fill a free grid, check the day rules at the end | 125k steps, 12 s, not one complete timetable |
 | Raise the step limit after zero results | the same failure, slower |
 | Random restarts with different seeds | 25 seeds gave about 5 different plans |
-| Time-order build (A) with lookahead | placed, about 160k steps, 0.3 s |
+| Time-order JavaScript build (A) with lookahead | the later implementation did not place F1 within 10 s; some variants exceeded 30 or 120 s, so production generation moved to CP-SAT |
 
 ## Caveats
 - The details of FET, UniTime and Timefold are from their own documentation. GOAL's internal method beyond "hybrid

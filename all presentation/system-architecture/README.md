@@ -13,7 +13,8 @@
     ├──► INGEST ─── turns files, pasted rows, and form entries into confirmed input
     │                    │
     │                    ▼
-    ├────────────────► ENGINE ─── analyzes, searches, checks, and improves a timetable
+    ├────────────────► ENGINE ─── Node.js analyzes/prepares → Python CP-SAT solves →
+    │                                JavaScript checker validates
     │                                  │
     │                                  ▼
     └────────────────────────────── EXPORT ─── views, explains, and downloads results
@@ -23,9 +24,9 @@ SQLite storage supports the app and server. Optional AI is a helper inside inges
 
 ## Choose a topic
 
-1. [App and server](app-server.md) — screens, API routes, local server, storage, and worker.
+1. [App and server](app-server.md) — screens, API routes, local server, storage, and solver process bridge.
 2. [Ingest](ingest.md) — how teacher-provided data becomes a confirmed problem.
-3. [Engine](engine.md) — analysis, timetable search, validation, and improvement.
+3. [Engine](engine.md) — analysis, CP-SAT constraint model, independent validation, and planned improvement.
 4. [Export](export.md) — timetable views, reports, run history, Excel, and PDF.
 
 ## Shared data flow

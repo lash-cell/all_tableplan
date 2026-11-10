@@ -7,7 +7,7 @@
 Status: the owner adds "✓" after a task's id once it passed the owner's check (README.md), e.g. "T0 ✓". Only the
 owner does this. A task without ✓ is not done, whatever a report says.
 
-Code folders mirror the plan: `data/`, `engine/`, `output/`, plus `server/` (routes, storage, worker; from stack.md
+Code folders mirror the plan: `data/`, `engine/`, `output/`, plus `server/` (routes, storage, solver process; from stack.md
 and app/routes.md). Tests sit next to the code they test. Test files F1-F5 live in the code repo's test folder.
 Every check below uses F1-F5 (demo-day.md); never only the sample.
 
@@ -18,7 +18,7 @@ Every check below uses F1-F5 (demo-day.md); never only the sample.
 | T1 | Spike SP1: read F1 with ExcelJS | stack.md (spikes) | as stack.md SP1; result written in the report |
 | T2 | Spike SP2: write a merged-cell Thai grid | stack.md (spikes) | as SP2 |
 | T3 | Spike SP3: Thai PDF page | stack.md (spikes) | as SP3, page-1 image looked at |
-| T4 | Spike SP4: worker + cancel | stack.md (spikes) | as SP4 |
+| T4 | Spike SP4: local CP-SAT subprocess, responsiveness, limits, and cancel | stack.md (spikes) | as SP4 |
 | T5 | Test sets F2-F5 (demo-day.md), each as files: source, problem.json, expected.json. F1's problem.json is written once and checked by hand against base/. Plus one hand-made VALID timetable for F2, as a result.json | demo-day.md · shapes.md | every problem.json follows shapes.md; F4 stays solvable (no new contradiction); F5 has none of F1's names |
 
 ## Stage 1: data, just enough to feed the engine
@@ -32,19 +32,19 @@ Every check below uses F1-F5 (demo-day.md); never only the sample.
 ## Stage 2: engine (the points)
 | ID | Task | Read | Done when |
 |---|---|---|---|
-| T10 | The checker (engine section 5), sharing no code with anything else in engine/ | engine/README.md §5 · shapes.md (Report) | the F2 valid timetable passes; 12+ copies, each breaking one rule, each caught with the right rubricId |
-| T11 | Input data → lessons to place (theory shared by the year's groups, practical per group, fixed, activity slot) | engine/README.md §1-2 · shapes.md | F1: 51 lessons to place; every activity course fixed at the activity slot |
-| T12 | Analysis (engine 3a) | engine/README.md §3a | F1 ok with 36/37/34 periods, 159 counted, bands 138-170 (demo-day.md); F3 infeasible naming period 1 on Thursday and Friday; under 1 s |
-| T13 | Day builder + phase 1 search with filters and counts (sections 1, 2, 3b) | engine/README.md §1-3b | F2 placed; the checker's time rules (H1-H6) pass on it; same input twice → same placement |
-| T14 | Lookahead, MRV ordering, interchangeable classes | engine/README.md §2-3b | F1 placed within 30 s; steps reported before and after this task |
-| T15 | Phase 2: rooms, then teachers; ask phase 1 for the next timetable on failure | engine/README.md §3c | F1 feasible; the checker passes every rule; every teacher inside min-max |
-| T16 | Limits, statuses, likely causes, measurements | engine/README.md §3d-3e | a tiny step limit → searchLimit with "not a proof"; F3 → infeasible; stats filled |
-| T17 | Improvement (section 4) | engine/README.md §4 | F1: final score ≤ first score; history per round; the checker passes after; same seed → same result |
+| T10 | The checker (engine section 6), sharing no code with anything else in engine/ | engine/README.md §6 · shapes.md (Report) | the F2 valid timetable passes; 12+ copies, each breaking one rule, each caught with the right rubricId |
+| T11 | Input data → lessons to place (theory shared by the year's groups, practical per group, fixed, activity slot) | engine/README.md §1 · shapes.md | F1: 51 lessons to place; every activity course fixed at the activity slot |
+| T12 | Analysis (engine section 3) | engine/README.md §3 | F1 ok with 36/37/34 periods, 159 counted, bands 138-170 (demo-day.md); F3 infeasible naming period 1 on Thursday and Friday; under 1 s |
+| T13 | CP-SAT model: lesson candidates, group-day shape, fixed times, and hard rules | engine/README.md §2 | F2 placed; the checker's rules pass; solver status and measurements are reported |
+| T14 | Resource and workload constraints in the joint CP-SAT model | engine/README.md §2 | F1 placed within 30 s; rooms, teachers, availability, and min-max all pass the independent checker |
+| T15 | Node-to-Python solver bridge and end-to-end result validation | stack.md · engine/README.md §§2-4 | F1 feasible; checker passes every rule; repeated input is deterministic; backend errors and limits are explicit |
+| T16 | Limits, statuses, likely causes, measurements | engine/README.md §4 | a tiny time limit → searchLimit with "not a proof"; F3 → infeasible; solver and bridge stats filled |
+| T17 | Improvement (planned section 5) | engine/README.md §5 | F1: final score ≤ first score; history per round; the checker passes after; same seed → same result |
 
 ## Stage 3: running and output
 | ID | Task | Read | Done when |
 |---|---|---|---|
-| T18 | Runs in the worker: start, poll, cancel, timeout, saved, survive a restart | stack.md · shapes.md (Run) | health under 50 ms during a run; cancel stays cancelled; a crashing fake engine → state failed, app alive; runs still listed after restart |
+| T18 | Runs in the solver subprocess: start, poll, cancel, timeout, saved, survive a restart | stack.md · shapes.md (Run) | health under 50 ms during a run; cancel stays cancelled; a crashing fake solver → state failed, app alive; runs still listed after restart |
 | T19 | Views (group, teacher, room, course) | output/README.md · shapes.md (View) | every row covers periods 1-periodsPerDay exactly once; F1 group views add up to 36/37/34 lesson periods |
 | T20 | Report, assumptions panel, run history (compare, choose) | output/README.md · shapes.md | F1 report: every item passed; a changed value appears in the assumptions; compare shows the change |
 | T21 | Excel export | output/README.md · stack.md | the file reopens; sheet names valid; one known lesson cell matches the view |

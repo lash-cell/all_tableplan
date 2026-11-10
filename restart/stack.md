@@ -9,11 +9,12 @@ Rule: take the first choice. Switch to a backup only when a spike (below) fails,
 
 | Part | First choice | Backups | Licence | Notes |
 |---|---|---|---|---|
-| Language + runtime | Node.js, current LTS, plain JavaScript | Deno · Bun | MIT | owner decision: one language for everything |
+| Application + integration runtime | Node.js, current LTS, plain JavaScript | Deno · Bun | MIT | server, ingest, analysis, model bridge, checker, routes, and tests stay in Node.js |
+| Scheduling solver | Python 3.12.3 + OR-Tools CP-SAT 9.15.6755 | | Apache-2.0 | approved exception to the one-language plan; Python is limited to the local solver backend. Pin in `requirements.txt` |
 | Address | 127.0.0.1, one port | | | localhost only: nobody else can reach it |
 | Web server | built in (node:http) | Express 5 · Fastify | MIT | about 10 routes + serving the built screens: the built-in one is enough |
-| Engine in the background | built in (worker threads) | a child process | MIT | the app stays responsive, a run can be cancelled, an engine crash can't stop the app. Listen for the worker's result, error AND exit; stop it at the time limit + 10 s. Proven: an unwatched worker error crashes the whole app |
-| Storage | `node:sqlite` (built into Node.js; one SQLite database in the ignored `data/` folder) | | | one user, local data; no external database package |
+| Solver process bridge | Node.js `child_process` launching the local Python solver; JSON over stdin/stdout | | | keeps CP-SAT out of the server process; handle spawn errors, exit codes, malformed output, stderr, output limits, time limits, and cancellation explicitly |
+| Storage | `node:sqlite` (built into Node.js; one SQLite database in the ignored `data/` folder) | | | approved local storage target; persistent app storage is not implemented in TimeTableMaker 1.0 |
 | Reading .xlsx | ExcelJS | SheetJS Community Edition · @protobi/exceljs (a maintained fork) | MIT · Apache-2.0 · MIT | ExcelJS's last official release is 4.4.0 (Oct 2023) and maintenance is inactive. SheetJS: take it from cdn.sheetjs.com, never the npm copy (stale 0.18.5, known security issue) |
 | Writing .xlsx | ExcelJS | SheetJS Community Edition | MIT · Apache-2.0 | needs merged cells (a lesson spans its periods) |
 | Writing PDF | decided by spike SP3 | pdfmake (on PDFKit) · Puppeteer (headless Chromium prints an HTML page) · LibreOffice (converts our .xlsx) | MIT · Apache-2.0 · MPL-2.0 | pdfmake is light, but its Thai shaping is unverified. Chromium shapes Thai correctly but is a big download. LibreOffice was seen rendering Thai correctly, but needs scale-to-page and a big install |
@@ -29,7 +30,7 @@ Rule: take the first choice. Switch to a backup only when a spike (below) fails,
 | SP1 | read base/data.xlsx and its reversed-columns copy with ExcelJS | every cell comes out as plain text, merged headings included | SheetJS Community Edition |
 | SP2 | write a 5 × 11 grid with merged cells and Thai text with ExcelJS | it opens in LibreOffice and Excel, Thai intact | SheetJS Community Edition |
 | SP3 | make one PDF page with pdfmake + Sarabun, containing "ปฏิบัติการคอมพิวเตอร์ 20000-1101 ที่ นี่ ผู้ ฟุ้ง" | as an image: every vowel and tone mark in place, Latin visible | Puppeteer, then LibreOffice |
-| SP4 | a worker running a 60 s busy loop; the app answers within 50 ms; cancel stops it | both true | a child process |
+| SP4 | run the local CP-SAT subprocess while the health route stays responsive; test solver time limit, cancellation, crash, malformed output, and cleanup | health stays under 50 ms; each stop/failure produces the correct state and leaves the server alive | |
 | SP5 (only if AI is wanted) | the free API turns a Thai sentence ("ครู B สอนไม่ได้วันศุกร์เช้า") into a proposed unavailable time, and matches a header like "ชม./สัปดาห์" | correct, with the guess flagged, under 10 s | the next free API; if all fail, drop AI: nothing else depends on it |
 
 The API key belongs to the USER, not the project. The user enters it on the Settings screen (app/screens.md); it is
@@ -53,7 +54,7 @@ Each spike: under an hour, its result written down before any building starts.
 | the measured failures in engine/techniques.md, section 4 | they failed on this data |
 | genetic algorithms, machine learning or an LLM building the timetable | none beats build-then-improve here, and none guarantees the hard rules |
 | a new library without approval | each one is a risk on an offline machine |
-| Python or TypeScript | owner decision: one language, plain JavaScript |
+| Python for application logic, routes, ingest, analysis, checker, or UI; TypeScript anywhere | keep the app and independent checker in JavaScript; Python is allowed only for the local OR-Tools CP-SAT solver |
 
 ## Later (not forbidden, just not now)
 | Item | When |

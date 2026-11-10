@@ -1,5 +1,9 @@
 # Export and results
 
+This page describes the target export architecture. TimeTableMaker 1.0 does not yet implement the saved-run and
+score-history pipeline or the planned Excel/PDF export flow; ExcelJS currently reads `.xlsx` input, not these
+exports.
+
 ## What this part does
 
 Output takes a saved run and prepares the timetable views, explanations, history, and downloadable files. The
