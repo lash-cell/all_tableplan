@@ -8,7 +8,7 @@ screen is the app's job (app/README.md).
 
 | Takes | Gives out |
 |---|---|
-| result.json and the run's copy of problem.json (shapes.md) | View (shapes.md) · the report · the assumptions panel · run history · an .xlsx file · a .pdf file |
+| result and the run's copy of the input object (shapes.md), loaded from SQLite | View (shapes.md) · the report · the assumptions panel · run history · an .xlsx file · a .pdf file |
 
 ## Views (G 2a-2d, R 2.2-2.4, 3.4)
 | View | One grid per | Shows in each lesson cell |

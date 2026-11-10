@@ -18,19 +18,19 @@
 The times assume a ~12 minute slot; scale them when the real slot is known.
 
 ## 3. System architecture + stack
-In one line: the screens send the teacher's data to one local program, which turns it into one file, schedules it,
-checks it, and sends back timetables and files. Everything runs on this computer.
+In one line: the screens send the teacher's data to one local program, which turns it into the problem data shape,
+saves it in SQLite, schedules it, checks it, and sends back timetables and files. Everything runs on this computer.
 
 | Part | What it does | Built with | Why |
 |---|---|---|---|
 | Screens | what the teacher sees: Data, Generate, Results | React + Vite | a normal web page; nothing to install but the program |
 | Local server | the one program; passes requests to the parts | Node.js, its built-in web server, 127.0.0.1 only | one language for everything; nobody outside this computer can reach it |
-| Data step | reads uploads, pasted rows and forms into one clean file | ExcelJS · word lists in words.json · guideline values in defaults.json | a new synonym or rule value is a file edit, never a code change |
-| problem.json | the one input format | plain JSON | the engine never sees a spreadsheet, so it can't hard-code one |
+| Data step | reads uploads, pasted rows and forms into one clean problem object | ExcelJS · word lists in words.json · guideline values in defaults.json | a new synonym or rule value is a file edit, never a code change |
+| problem.json | the one input contract | plain JSON shape, persisted in SQLite | the engine never sees a spreadsheet, so it can't hard-code one |
 | Engine | check, build, assign, check again, improve | plain JavaScript, in a background worker | the screen stays responsive, and a run can be cancelled |
-| result.json | the one output format | plain JSON | every view and export comes from the same checked result |
+| result.json | the one output contract | plain JSON shape, persisted with the run in SQLite | every view and export comes from the same checked result |
 | Output | timetable grids, report, Excel, PDF | ExcelJS · a PDF library with a Thai+Latin font | what's on screen and in the files always matches |
-| Storage | saved data and every run | JSON files in one folder | one user, small data: no database needed |
+| Storage | current problem and run history | built-in `node:sqlite`, one database in the ignored data folder | local structured storage with no external database package |
 | AI assistant (optional) | proposes values for unreadable parts | a free API (Groq), with the user's own key | helps with messy input; the app works fully without it |
 
 If a spike (stack.md) changes a first choice, change the "Built with" column here too.

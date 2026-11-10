@@ -3,22 +3,24 @@
 > Read when: building anything that gives data to, or takes data from, another folder. Key rule: these names are
 > the ONLY names. A part that needs a new field proposes it here first; it never invents one in code.
 
-## The files: data is never code
-The parts talk ONLY through these files. No part reads another part's inputs (the engine never sees an .xlsx, a
-sheet name or a column), and no data value is ever written into code.
+## Data contracts and persistence: data is never code
+Parts pass objects matching these JSON contracts. The engine never sees an .xlsx, a sheet name or a column, and no
+data value is ever written into code. The app persists mutable state in one built-in `node:sqlite` database under
+the ignored `data/` folder; `problem.json`, `result.json` and Run remain the exact serialized contracts and test
+fixture formats, not separate live persistence files.
 
-| File | Holds | Written by | Read by |
+| Contract or file | Holds | Produced or persisted by | Read by |
 |---|---|---|---|
-| problem.json | Input data (below) + `format` (a version number, starting at 1) | data/ (upload, paste, form, AI) | engine/, output/ |
-| result.json | Result (below) + `format`, one per run | engine/ | output/ |
-| run files | Run (below), one per run, holding a copy of its problem and its result | server/ | output/, the screens |
+| problem.json | Input data (below) + `format` (a version number, starting at 1); the current input is persisted in SQLite | data/ (upload, paste, form, AI) | engine/, output/ |
+| result.json | Result (below) + `format`, one per run; persisted with its Run in SQLite | engine/ | output/ |
+| Run | Run (below), holding a copy of its problem and its result; persisted in SQLite | server/ | output/, the screens |
 | words.json | the word lists: header synonyms, day words, room words, position words, category words, skip-row words | the owner (shipped with the app) | data/ |
 | defaults.json | the guideline values: time, break periods, finish limits, activity slot, workload bands per position | the owner (shipped with the app) | data/ (fills the form) |
 
 - Adding a synonym or changing a guideline value = editing words.json or defaults.json. Never code.
 - Tests use files too: each test set is a problem.json plus an expected.json with the numbers it must give
   (demo-day.md). Engine and output tests never open an .xlsx.
-- A part that can't do its job with only its input files has a missing field: propose it in this file.
+- A part that can't do its job with only its input objects has a missing field: propose it in this file.
 
 Conventions:
 - Field names in camelCase, as written here. Text values in the lists below are written exactly as shown.

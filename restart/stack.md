@@ -13,7 +13,7 @@ Rule: take the first choice. Switch to a backup only when a spike (below) fails,
 | Address | 127.0.0.1, one port | | | localhost only: nobody else can reach it |
 | Web server | built in (node:http) | Express 5 · Fastify | MIT | about 10 routes + serving the built screens: the built-in one is enough |
 | Engine in the background | built in (worker threads) | a child process | MIT | the app stays responsive, a run can be cancelled, an engine crash can't stop the app. Listen for the worker's result, error AND exit; stop it at the time limit + 10 s. Proven: an unwatched worker error crashes the whole app |
-| Storage | JSON files in a data folder, written safely (temp file, then rename) | node:sqlite (built in, but still "release candidate", not stable) · lowdb | | one user, small data: no database |
+| Storage | `node:sqlite` (built into Node.js; one SQLite database in the ignored `data/` folder) | | | one user, local data; no external database package |
 | Reading .xlsx | ExcelJS | SheetJS Community Edition · @protobi/exceljs (a maintained fork) | MIT · Apache-2.0 · MIT | ExcelJS's last official release is 4.4.0 (Oct 2023) and maintenance is inactive. SheetJS: take it from cdn.sheetjs.com, never the npm copy (stale 0.18.5, known security issue) |
 | Writing .xlsx | ExcelJS | SheetJS Community Edition | MIT · Apache-2.0 | needs merged cells (a lesson spans its periods) |
 | Writing PDF | decided by spike SP3 | pdfmake (on PDFKit) · Puppeteer (headless Chromium prints an HTML page) · LibreOffice (converts our .xlsx) | MIT · Apache-2.0 · MPL-2.0 | pdfmake is light, but its Thai shaping is unverified. Chromium shapes Thai correctly but is a big download. LibreOffice was seen rendering Thai correctly, but needs scale-to-page and a big install |
@@ -42,7 +42,7 @@ Each spike: under an hour, its result written down before any building starts.
 | Never | Why |
 |---|---|
 | hard-coding the sample data (sheet names, course codes, teacher names, row numbers) | the judges bring different data |
-| a second server, a database, login, or access from other devices | one teacher, one computer, offline on the day |
+| a second server, any database other than built-in `node:sqlite`, login, or access from other devices | one teacher, one computer, offline on the day |
 | any outgoing internet call except the optional AI assistant | the app must work with the network off; the AI is the one switchable exception |
 | using AI output without the teacher confirming it | AI can misread; a wrong rule silently breaks the timetable |
 | the engine checking its own timetable | the checker is separate, or one bug hides in both |

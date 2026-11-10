@@ -7,7 +7,7 @@ Step 1 of the flow (README.md). Sources: G = base/guideline.pdf · R = rubric it
 
 | Takes | Gives out |
 |---|---|
-| the teacher's form entries · an uploaded .xlsx · pasted rows · words.json · defaults.json | problem.json: the input data (below), confirmed by the teacher (shapes.md) |
+| the teacher's form entries · an uploaded .xlsx · pasted rows · words.json · defaults.json | the confirmed problem object (shapes.md), persisted in SQLite |
 
 ## The form is the one data definition (G 1a-1e, R 3.1)
 The upload template and the teacher's data guide are made from it, so the three can never disagree.
@@ -123,7 +123,8 @@ Traps proven on the sample files:
   Nothing is dropped silently.
 
 Several uploads, and pastes:
-- Each upload or paste ADDS records to the current problem.json; it never wipes what is there.
+- Each upload or paste ADDS records to the current problem object; it never wipes what is there. The server persists
+  the updated object in SQLite.
 - A duplicate is a course with the same code (compared without spaces), or a teacher with the same name. The year
   is NOT compared: the Thai and English copies of one workbook name it differently ("ปวช.1", "Vocational
   Certificate Year 1"). It is a warning: the teacher keeps one of the two.

@@ -3,15 +3,15 @@
 > Read when: building or fixing the engine. Key decisions: build each group's day left to right (rules hold by
 > construction) · fixed lessons placed first (MRV) · method = build, then improve (techniques.md).
 
-A build guide for the timetable engine. Its input is problem.json and its output result.json; the exact fields are in
-shapes.md ("Input data", "Result"). Every number below written as a default (break periods 4-6, finish 9/11,
-Thursday 6-7) is read from problem.json, never written into code.
+A build guide for the timetable engine. Its input and output are objects matching problem.json and result.json; the
+exact fields are in shapes.md ("Input data", "Result"). Every number below written as a default (break periods 4-6,
+finish 9/11, Thursday 6-7) is read from problem.json, never written into code.
 The engine has two layers: a CORE that places lessons, and a CONSTRAINT layer of small, separate rules.
 Sections: 1 day builder · 2 constraints · 3 analysis and search · 4 improvement · 5 checker and report.
 
 | Takes | Gives out |
 |---|---|
-| problem.json only (shapes.md). Never an .xlsx, a sheet or a column | result.json (below) |
+| problem object only (shapes.md). Never an .xlsx, a sheet or a column | result object (below) |
 
 ### Gives out
 - **status:** feasible · infeasible (proven) · search limit (not a proof) · invalid input · validation failed (an
