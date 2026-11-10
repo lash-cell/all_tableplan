@@ -150,36 +150,35 @@
 <div class="app">
   <nav class="side" aria-label="เมนูหลัก">
     <div class="logo" aria-hidden="true">TT</div>
-    <button class="nav" aria-current="page"><svg><use href="#i-grid"/></svg>ภาพรวม</button>
-    <button class="nav"><svg><use href="#i-upload"/></svg>นำเข้า</button>
-    <button class="nav"><svg><use href="#i-play"/></svg>จัดตาราง</button>
-    <button class="nav"><svg><use href="#i-chart"/></svg>ผลลัพธ์</button>
+    <button class="nav" aria-current="page"><svg><use href="#i-upload"/></svg>Data</button>
+    <button class="nav"><svg><use href="#i-play"/></svg>Generate</button>
+    <button class="nav"><svg><use href="#i-chart"/></svg>Results</button>
   </nav>
 
   <main>
     <header class="head tt-enter">
       <h1>สวัสดี ผู้จัดตาราง</h1>
-      <p>มาจัดตารางเรียนให้ลงตัวกันเถอะ — ตัวอย่างหน้าตา (ข้อมูลจำลอง ไม่ใช่ผลจากเอนจิน)</p>
+      <p>ภาพตัวอย่างหน้าจอสำหรับผู้จัดตาราง — ข้อมูลจำลอง ไม่ได้เชื่อม server หรือ engine</p>
       <div class="toolbar">
         <label class="search"><svg width="20" height="20"><use href="#i-search"/></svg>
           <input type="search" placeholder="ค้นหากลุ่ม ครู ห้อง หรือวิชา…" aria-label="ค้นหา"></label>
-        <button class="btn btn-primary"><svg width="18" height="18"><use href="#i-upload"/></svg>นำเข้าไฟล์</button>
-        <button class="btn btn-secondary">ส่งออก Excel</button>
-        <button class="btn btn-ghost">ส่งออก PDF</button>
+        <button class="btn btn-primary" disabled><svg width="18" height="18"><use href="#i-upload"/></svg>นำเข้า .xlsx</button>
+        <button class="btn btn-secondary" disabled>ส่งออก Excel</button>
+        <button class="btn btn-ghost" disabled title="PDF library ยังไม่ผ่านการทดสอบ">ส่งออก PDF</button>
         <button class="btn btn-primary" disabled>กำลังจัด…</button>
       </div>
     </header>
 
     <section class="grid tt-stagger" aria-label="สรุป">
-      <div class="card stat tt-lift" style="--i:0"><div class="icon tint-mint"><svg><use href="#i-book"/></svg></div><b data-count="35">0</b><span>รายวิชาที่นำเข้า</span></div>
-      <div class="card stat tt-lift" style="--i:1"><div class="icon tint-lavender"><svg><use href="#i-user"/></svg></div><b data-count="5">0</b><span>ครูผู้สอน</span></div>
-      <div class="card stat tt-lift" style="--i:2"><div class="icon tint-butter"><svg><use href="#i-clock"/></svg></div><b data-count="159">0</b><span>ชั่วโมงสอนรวม (คำนวณ)</span></div>
-      <div class="card stat tt-lift" style="--i:3"><div class="icon tint-rose"><svg><use href="#i-warn"/></svg></div><b data-count="0">0</b><span>ข้อขัดแย้ง</span></div>
+      <div class="card stat tt-lift" style="--i:0"><div class="icon tint-mint"><svg><use href="#i-book"/></svg></div><b data-count="12">0</b><span>รายวิชา (ตัวอย่าง)</span></div>
+      <div class="card stat tt-lift" style="--i:1"><div class="icon tint-lavender"><svg><use href="#i-user"/></svg></div><b data-count="0">0</b><span>ข้อมูลครูไม่มีในตัวอย่าง</span></div>
+      <div class="card stat tt-lift" style="--i:2"><div class="icon tint-butter"><svg><use href="#i-clock"/></svg></div><b data-count="34">0</b><span>คาบเรียน (ตัวอย่าง)</span></div>
+      <div class="card stat tt-lift" style="--i:3"><div class="icon tint-rose"><svg><use href="#i-warn"/></svg></div><b data-count="0">0</b><span>ข้อขัดแย้ง (ตัวอย่างเท่านั้น)</span></div>
     </section>
 
     <section class="card" aria-labelledby="tt-title">
       <div class="row">
-        <div><h2 id="tt-title">ตารางเรียน · ทค.1/1</h2></div>
+        <div><h2 id="tt-title">ตารางตัวอย่าง · กลุ่มตัวอย่าง A</h2></div>
         <div class="seg" role="tablist" aria-label="มุมมอง">
           <button role="tab" aria-selected="true">กลุ่ม</button>
           <button role="tab" aria-selected="false">ครู</button>
@@ -187,31 +186,30 @@
           <button role="tab" aria-selected="false">วิชา</button>
         </div>
       </div>
-      <div class="tt tt-stagger" id="tt" role="grid" aria-label="ตารางเรียน ทค.1/1"></div>
+      <div class="tt tt-stagger" id="tt" role="grid" aria-label="ตารางตัวอย่าง กลุ่มตัวอย่าง A"></div>
       <div class="legend" aria-label="คำอธิบายสี">
-        <span class="chip tint-lavender">วิชาสามัญ</span><span class="chip tint-butter">ทฤษฎีแผนก</span>
-        <span class="chip tint-mint">ปฏิบัติ · COM</span><span class="chip tint-peach">ปฏิบัติ · LAB</span>
-        <span class="chip tint-rose">กิจกรรม/ลูกเสือ</span><span class="chip tint-slate">พักกลางวัน</span>
+        <span class="chip tint-lavender">สามัญ</span><span class="chip tint-butter">แผนกวิชา</span>
+        <span class="chip tint-rose">กิจกรรม</span><span class="chip tint-slate">พัก (ตัวอย่างคาบ 5)</span>
       </div>
-      <p class="note">ปวช.1 เรียนไม่เกินคาบ 9 — คาบ 10–11 แสดงเป็นลายขีดเพื่อให้เห็นขอบเขตของระดับชั้น</p>
+      <p class="note">ข้อมูลสาธิตกำหนดพักไว้ที่คาบ 5 และสิ้นสุดคาบ 9; ไม่ใช่ผลจากโจทย์หรือ engine</p>
     </section>
 
     <section class="two">
       <div class="card">
         <h2>จัดตาราง</h2>
         <div class="steps" aria-live="polite" id="steps">
-          <div class="step" data-state="pending"><span class="dot">1</span><span><b>Plan</b> วิเคราะห์ความเป็นไปได้</span></div>
-          <div class="step" data-state="pending"><span class="dot">2</span><span><b>Act</b> ค้นหาตำแหน่งวาง</span></div>
-          <div class="step" data-state="pending"><span class="dot">3</span><span><b>Validate</b> ตรวจซ้ำทุกกฎ</span></div>
+          <div class="step" data-state="pending"><span class="dot">1</span><span><b>Check</b> ตรวจความเป็นไปได้</span></div>
+          <div class="step" data-state="pending"><span class="dot">2</span><span><b>Generate</b> ค้นหาตาราง</span></div>
+          <div class="step" data-state="pending"><span class="dot">3</span><span><b>Check again</b> ตรวจผลอิสระ</span></div>
         </div>
         <div class="bar" aria-hidden="true"><i id="bar"></i></div>
-        <div style="margin-top:var(--space-4)"><button class="btn btn-primary" id="run"><svg width="18" height="18"><use href="#i-play"/></svg>จำลองการจัดตาราง</button></div>
-        <div class="banner ok" id="b-ok" role="status" hidden><svg><use href="#i-check"/></svg><div><strong>จัดตารางสำเร็จและผ่านการตรวจ</strong>ครบทุกคาบ · ไม่พบข้อขัดแย้ง (ตัวอย่าง)</div></div>
+        <div style="margin-top:var(--space-4)"><button class="btn btn-primary" id="run"><svg width="18" height="18"><use href="#i-play"/></svg>ดูตัวอย่าง progress</button></div>
+        <div class="banner ok" id="b-ok" role="status" hidden><svg><use href="#i-check"/></svg><div><strong>จบการจำลองหน้าจอ</strong>ไม่ได้เรียก engine และไม่ได้ยืนยันว่าตารางจัดได้จริง</div></div>
       </div>
       <div class="card">
-        <h2>สถานะที่ต้องออกแบบให้ครบ</h2>
-        <div class="banner warn"><svg><use href="#i-clock"/></svg><div><strong>หมดเวลาก่อนพบคำตอบ</strong>ไม่ได้แปลว่าจัดไม่ได้ ลองเพิ่มเวลาหรือผ่อนเงื่อนไข</div></div>
-        <div class="banner bad tt-shake"><svg><use href="#i-warn"/></svg><div><strong>จัดไม่ได้: ครูไม่พอสำหรับคาบ 1</strong>กฎ R17 · ข้อเสนอ: เพิ่มครู หรือใช้ทฤษฎีรวม</div></div>
+        <h2>สถานะตัวอย่างจากระบบ</h2>
+        <div class="banner warn"><svg><use href="#i-clock"/></svg><div><strong>searchLimit · ถึงขีดจำกัดค้นหา</strong>ยังไม่พบคำตอบ ไม่ได้แปลว่าจัดไม่ได้</div></div>
+        <div class="banner bad tt-shake"><svg><use href="#i-warn"/></svg><div><strong>validationFailed · ตรวจผลไม่ผ่าน</strong>เป็นข้อบกพร่องของ engine ห้ามแสดงตารางเป็นผลสำเร็จ</div></div>
         <p class="note" style="margin-top:var(--space-4)">กำลังโหลด (skeleton)</p>
         <div class="skel" style="width:90%"></div><div class="skel" style="width:70%"></div><div class="skel" style="width:80%"></div>
       </div>
@@ -230,21 +228,22 @@
 </div>
 
 <script>
-  // --- Mock data (illustrative; fixed slots come from the real xlsx, ปวช.1) ---
-  const kinds = { general: "tint-lavender", theory: "tint-butter", com: "tint-mint", lab: "tint-peach", act: "tint-rose" };
+  // --- Synthetic visual sample; not an input file or engine result ---
+  const kinds = { general: "tint-lavender", department: "tint-butter", activity: "tint-rose" };
   const days = ["จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์"];
   const blocks = [
-    { d: 0, s: 1, l: 2, k: "general", c: "20000-1101", n: "ภาษาไทยเพื่อการสื่อสาร", r: "ห้องเรียนภาษาไทย", lock: 1 },
-    { d: 0, s: 3, l: 2, k: "general", c: "20000-1201", n: "ภาษาอังกฤษเพื่อการสื่อสาร", r: "ห้องเรียนภาษาอังกฤษ", lock: 1 },
-    { d: 0, s: 6, l: 4, k: "com", c: "21909-1004", n: "พื้นฐานการวิเคราะห์ฯ", r: "COM1 · ครู C" },
-    { d: 1, s: 1, l: 2, k: "general", c: "20000-1401", n: "คณิตศาสตร์พื้นฐานอาชีพ", r: "ห้องเรียนคณิตศาสตร์", lock: 1 },
-    { d: 1, s: 3, l: 2, k: "general", c: "20000-1502", n: "ประวัติศาสตร์ชาติไทย", r: "ห้องเรียนสังคม", lock: 1 },
-    { d: 1, s: 6, l: 2, k: "general", c: "20000-1603", n: "พลศึกษาเพื่อพัฒนาสุขภาพ", r: "ห้องเรียนพลศึกษา", lock: 1 },
-    { d: 2, s: 1, l: 4, k: "lab", c: "21909-1001", n: "งานไฟฟ้าและอิเล็กทรอนิกส์ฯ", r: "LAB1 · ครู D" },
-    { d: 2, s: 6, l: 4, k: "com", c: "21909-1007", n: "การใช้งานระบบปฏิบัติการ", r: "COM2 · ครู E" },
-    { d: 3, s: 1, l: 4, k: "lab", c: "21909-1002", n: "อุปกรณ์อิเล็กทรอนิกส์ฯ", r: "LAB2 · ครู B" },
-    { d: 3, s: 6, l: 2, k: "act", c: "20000-2001", n: "กิจกรรมลูกเสือวิสามัญ 1", r: "แผนกวิชา", lock: 1 },
-    { d: 4, s: 1, l: 4, k: "com", c: "21909-2014", n: "ลีนุกซ์เบื้องต้น", r: "COM3 · ครู A" },
+    { d: 0, s: 1, l: 2, k: "general", c: "DEMO-01", n: "วิชาสามัญตัวอย่าง", r: "ห้องตัวอย่าง", lock: 1 },
+    { d: 0, s: 3, l: 2, k: "department", c: "DEMO-02", n: "วิชาแผนกตัวอย่าง", r: "ห้องตัวอย่าง" },
+    { d: 0, s: 6, l: 4, k: "department", c: "DEMO-03", n: "ปฏิบัติการตัวอย่าง", r: "ห้องปฏิบัติการตัวอย่าง" },
+    { d: 1, s: 1, l: 2, k: "general", c: "DEMO-04", n: "วิชาสามัญตัวอย่าง", r: "ห้องตัวอย่าง" },
+    { d: 1, s: 3, l: 2, k: "department", c: "DEMO-05", n: "วิชาแผนกตัวอย่าง", r: "ห้องตัวอย่าง" },
+    { d: 1, s: 6, l: 2, k: "general", c: "DEMO-06", n: "วิชาเลือกตัวอย่าง", r: "ห้องตัวอย่าง" },
+    { d: 2, s: 1, l: 4, k: "department", c: "DEMO-07", n: "ปฏิบัติการตัวอย่าง", r: "ห้องปฏิบัติการตัวอย่าง" },
+    { d: 2, s: 6, l: 4, k: "department", c: "DEMO-08", n: "วิชาแผนกตัวอย่าง", r: "ห้องคอมพิวเตอร์ตัวอย่าง" },
+    { d: 3, s: 1, l: 4, k: "department", c: "DEMO-09", n: "วิชาแผนกตัวอย่าง", r: "ห้องปฏิบัติการตัวอย่าง" },
+    { d: 3, s: 6, l: 2, k: "activity", c: "DEMO-10", n: "กิจกรรมตัวอย่าง", r: "ห้องตัวอย่าง", lock: 1 },
+    { d: 4, s: 1, l: 4, k: "department", c: "DEMO-11", n: "วิชาแผนกตัวอย่าง", r: "ห้องคอมพิวเตอร์ตัวอย่าง" },
+    { d: 4, s: 6, l: 2, k: "general", c: "DEMO-12", n: "วิชาเลือกตัวอย่าง", r: "ห้องตัวอย่าง" },
   ];
   const lunch = { 0: 5, 1: 5, 2: 5, 3: 5, 4: 5 };
   const maxPeriod = 9, periods = 11;
@@ -277,7 +276,7 @@
     requestAnimationFrame(tick);
   });
 
-  // --- Solve simulation: Plan -> Act -> Validate ---
+  // --- UI-only progress preview; this does not call an engine ---
   const steps = [...document.querySelectorAll("#steps .step")], bar = document.getElementById("bar"), ok = document.getElementById("b-ok"), run = document.getElementById("run");
   const check = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));

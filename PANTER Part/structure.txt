@@ -1,78 +1,25 @@
-﻿Doc\
-frontend\
-frontend_new\
-index.html
-package-lock.json
-package.json
-Readme
-structure.txt
-tsconfig.json
-Doc\design\
-Doc\design\DESIGN_SYSTEM.md
-Doc\design\preview.html
-Doc\design\preview_template.html
-Doc\design\tokens.css
-frontend\public\
-frontend\src\
-frontend\.gitignore
-frontend\.oxlintrc.json
-frontend\index.html
-frontend\package-lock.json
-frontend\package.json
-frontend\tsconfig.app.json
-frontend\tsconfig.json
-frontend\tsconfig.node.json
-frontend\vite.config.ts
-frontend\public\favicon.svg
-frontend\public\icons.svg
-frontend\src\assets\
-frontend\src\features\
-frontend\src\pages\
-frontend\src\styles\
-frontend\src\App.css
-frontend\src\App.tsx
-frontend\src\index.css
-frontend\src\main.tsx
-frontend\src\assets\hero.png
-frontend\src\assets\react.svg
-frontend\src\assets\vite.svg
-frontend\src\features\docs\
-frontend\src\features\docs\components\
-frontend\src\features\docs\docs-content.ts
-frontend\src\features\docs\docs.css
-frontend\src\features\docs\index.ts
-frontend\src\features\docs\components\ArchitectureDiagram.tsx
-frontend\src\features\docs\components\DocsToc.tsx
-frontend\src\features\docs\components\EnginePipeline.tsx
-frontend\src\features\docs\components\StatusTable.tsx
-frontend\src\features\docs\components\WorkflowSteps.tsx
-frontend\src\pages\DocsPage.tsx
-frontend\src\styles\tokens.css
-frontend_new\src\
-frontend_new\styles\
-frontend_new\README.md
-frontend_new\src\features\
-frontend_new\src\pages\
-frontend_new\src\app.tsx
-frontend_new\src\index.css
-frontend_new\src\main.tsx
-frontend_new\src\features\doc\
-frontend_new\src\features\doc\components\
-frontend_new\src\features\doc\docs-content.ts
-frontend_new\src\features\doc\docs.css
-frontend_new\src\features\doc\index.ts
-frontend_new\src\features\doc\components\ArchitectureDiagram.tsx
-frontend_new\src\features\doc\components\constants.ts
-frontend_new\src\features\doc\components\diagram.css
-frontend_new\src\features\doc\components\DiagramCanvas.tsx
-frontend_new\src\features\doc\components\DiagramEdgeView.tsx
-frontend_new\src\features\doc\components\DiagramNodeView.tsx
-frontend_new\src\features\doc\components\DiagramView.tsx
-frontend_new\src\features\doc\components\DocsToc.tsx
-frontend_new\src\features\doc\components\edge-path.ts
-frontend_new\src\features\doc\components\EnginePipeline.tsx
-frontend_new\src\features\doc\components\icons.ts
-frontend_new\src\features\doc\components\StatusTable.tsx
-frontend_new\src\features\doc\components\types.ts
-frontend_new\src\features\doc\components\WorkflowSteps.tsx
-frontend_new\src\pages\DocsPage.tsx
+PANTER Part/
+├── Doc/
+│   ├── DESIGN_SYSTEM.md
+│   ├── preview.html
+│   ├── preview_template.html
+│   └── tokens.css
+├── frontend_new/                  # UI prototype (React + Vite + JavaScript)
+│   ├── public/
+│   ├── src/
+│   │   ├── components/             # AppShell.jsx, Icon.jsx
+│   │   ├── features/
+│   │   │   ├── docs/               # Architecture and plan documentation
+│   │   │   └── home/               # Sample overview and simulated progress
+│   │   ├── pages/                  # HomePage.jsx, DocsPage.jsx
+│   │   └── styles/                 # Design tokens and page styles
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+├── index.html                      # Landing page linking to frontend_new/
+├── package.json                    # Root command wrapper
+├── Readme                          # Project ownership and plan references
+└── structure.txt
+
+The UI prototype is not connected to the planned server, SQLite database, ingest, or engine.
+The authoritative implementation plan is in ../restart/.

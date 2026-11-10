@@ -11,6 +11,5 @@ export const CORNER_RADIUS = 10;
 export const LABEL_GAP = 10;
 export const GROUP_LABEL_X = 16;
 export const GROUP_LABEL_Y = 24;
-
 // ความกว้างขั้นต่ำของ SVG เป็นสัดส่วนของ viewBox (ต่ำกว่านี้ให้เลื่อนแนวนอนแทนการย่อ)
 export const MIN_SCALE = 0.75;

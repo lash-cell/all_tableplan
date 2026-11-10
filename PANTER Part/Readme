@@ -1,24 +1,29 @@
-Tech Stack
-ชั้น	เทคโนโลยี	เหตุผล
-Frontend	React 18, TypeScript, Vite, React Router	ทำหน้า Import / Solve / Result / Student
-สถานะฝั่ง UI	custom store + localStorage (มี schemaVersion)	ไม่ต้องมี session ฝั่งเซิร์ฟเวอร์
-Backend	Node.js 24+, JavaScript ES modules, node:http	ไม่มี dependency เพิ่ม เริ่มเร็ว
-อ่านไฟล์	ExcelJS (.xlsx), pdf.js (PDF ข้อความ), CSV parser เขียนเอง + TextDecoder (UTF-8 / Windows-874)	รองรับไฟล์ไทย
-จัดเก็บ	ไฟล์ในเครื่อง + JSON ไม่ใช้ฐานข้อมูล	ติดตั้งง่าย ใช้เครื่องเดียว
-เอนจินจัดตาราง	JavaScript ล้วน, Constraint Satisfaction + backtracking + MRV + forward checking	deterministic ตรวจสอบได้ ไม่พึ่ง LLM
-ทดสอบ	node --test (backend/engine), เครื่องมือ frontend ยังไม่ระบุ
-ส่งออก	ExcelJS สำหรับ Excel, PDF ยังไม่ตัดสิน (Q18)	สร้างฝั่ง frontend จาก entries
+Timetable Maker — ส่วนงานของฉัน
 
+เอกสารหลักของโครงการอยู่ที่ ../restart/ และเป็นแหล่งอ้างอิงเมื่อข้อมูลขัดกัน:
+- restart/README.md: ขอบเขตระบบและกติกาการทำงาน
+- restart/tasks.md: ลำดับงานและสิ่งที่ต้องตรวจ
+- restart/stack.md: เทคโนโลยีที่อนุมัติและรายการห้ามใช้
+- restart/app/screens.md และ restart/app/routes.md: ข้อกำหนดหน้าจอและ API
+- restart/shapes.md: สัญญาข้อมูลที่ทุกส่วนต้องใช้ร่วมกัน
+- all presentation/system-architecture/: ภาพรวมสถาปัตยกรรมสำหรับนำเสนอ
 
-System Architecture
-Browser UI (React + TS + Vite)
-  หน้า Import / Solve / Result / Student
-  store + localStorage · มุมมองตาราง 4 แบบ · ส่งออก Excel/PDF
-        │  fetch (Vite proxy: /api → 127.0.0.1:8787)
-        ▼
-Algorithm API (Node.js, http ในตัว)  ← adapter บาง: ตรวจคำขอ + route
-        ▼
-Tools layer (ตรวจคำเรียก เชื่อม route กับงานหลังบ้าน)
-  ├─► Ingest  : ExcelJS · pdf.js · CSV parser → Problem
-  ├─► Storage : data/imports/<importId>/ (original, extraction, problem, metadata)
-  └─► Scheduling engine : NORMALIZE → ANALYZE → PLACE → VALIDATE
+ขอบเขตที่มีใน PANTER Part
+- frontend_new/ เป็น UI ต้นแบบ React + Vite + JavaScript ใช้ข้อมูลตัวอย่างเพื่อทดลองหน้าตา
+- ต้นแบบยังไม่มี API, server, SQLite, ingest หรือ scheduling engine ที่ทำงานจริง
+- ปุ่มที่ยังไม่เชื่อมระบบต้องระบุหรือปิดไว้ ไม่แสดงข้อมูลตัวอย่างเป็นผลจัดตารางจริง
+- ไม่เก็บข้อมูลโจทย์หรือประวัติ run ถาวรใน localStorage/JSON; แผนกำหนดให้ server ใช้ node:sqlite ใน data/
+
+แผนระบบตามเอกสารหลัก
+- หนึ่งโปรแกรมบนเครื่องเดียว ฟังที่ 127.0.0.1; UI เรียก API ของโปรแกรมนี้
+- server ใช้ Node.js, node:http, worker_threads และ node:sqlite
+- ingest ระยะแรก: form, .xlsx และ paste; CSV/PDF เป็นงานภายหลัง
+- engine รับ confirmed problem ตาม shapes.md, ค้นหาด้วยกฎที่กำหนด และตรวจผลด้วย checker อิสระ
+- output แสดงตาราง/รายงาน/ประวัติจาก run; ส่งออกได้เฉพาะผล feasible ที่ผ่าน checker
+- PDF library ยังไม่เลือกจนกว่าการทดสอบภาษาไทยจะผ่าน; AI เป็นทางเลือกสำหรับเสนอการตีความข้อมูลเท่านั้น
+
+กฎแก้ไข
+- ยึด restart/ เป็นหลัก ไม่สร้างสัญญาข้อมูลหรือฟีเจอร์ใหม่เอง
+- โค้ดของแผนใน restart/ เป็น read-only; เสนอการเปลี่ยนแปลงต่อเจ้าของแทน
+- ใช้ JavaScript เท่านั้น; ไม่เพิ่ม TypeScript หรือ library ใหม่โดยไม่มีอนุมัติ
+- อ่าน tasks.md และไฟล์ในคอลัมน์ Read ก่อนเริ่มงานระบบส่วนอื่น

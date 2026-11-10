@@ -17,11 +17,8 @@ import "@fontsource/noto-sans-thai/thai-400.css";
 import "./styles/tokens.css";
 import "./index.css";
 import App from "./App";
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+createRoot(document.getElementById("root")).render(<StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </StrictMode>
-);
+  </StrictMode>);

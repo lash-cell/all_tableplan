@@ -1,1 +1,10 @@
-{"name":"Timetable Maker","version":"0.1","type":"module"}
+{
+  "name": "timetable-maker-prototype",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm --prefix frontend_new run dev",
+    "build": "npm --prefix frontend_new run build",
+    "lint": "npm --prefix frontend_new run lint"
+  }
+}

@@ -1,16 +1,46 @@
-/* ใช้เฉพาะ token จาก styles/tokens.css */
-.doc-layout { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-8); max-width: var(--container-max); }
-.doc-toc { position: sticky; top: var(--space-8); align-self: start; font-size: var(--text-sm); }
+/* ใช้โครงสีและพื้นผิวเดียวกับหน้าแรก */
+.doc-layout {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--space-8);
+  width: 80%;
+  max-width: calc(var(--container-max) * 0.8);
+  zoom: 1.25;
+}
+.doc-toc {
+  position: sticky;
+  top: var(--space-8);
+  align-self: start;
+  padding: var(--space-5);
+  font-size: var(--text-sm);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+}
+.doc-toc strong { display: block; color: var(--color-text-strong); font-family: var(--font-display); }
 .doc-toc ul { list-style: none; margin: var(--space-3) 0 0; padding: 0; display: grid; gap: var(--space-1); }
-.doc-toc a { display: block; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); color: var(--color-text-muted); text-decoration: none; }
+.doc-toc a { display: block; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); color: var(--color-text-muted); text-decoration: none; transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard); }
 .doc-toc a:hover { background: var(--color-primary-50); color: var(--color-primary-700); }
 .doc-toc a:focus-visible, .doc-node:focus-visible { outline: none; box-shadow: var(--focus-ring); }
-.doc-body { display: grid; gap: var(--space-10); max-width: 760px; }
-.doc-body h1 { font-size: var(--text-3xl); font-weight: var(--weight-semibold); }
+.doc-body { display: grid; gap: var(--space-6); min-width: 0; }
+.doc-body > header,
+.doc-body > section {
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+}
+.doc-page-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+.doc-eyebrow { display: block; margin-bottom: var(--space-2); color: var(--color-primary-700); font-size: var(--text-xs); font-weight: var(--weight-semibold); letter-spacing: 0.06em; }
+.doc-body h1 { font-size: var(--text-3xl); font-weight: var(--weight-semibold); margin: 0; }
+.doc-home-link { flex: none; text-decoration: none; }
+.doc-body > header > p { margin: var(--space-3) 0 0; color: var(--color-text-muted); }
 .doc-body h2 { font-size: var(--text-2xl); font-weight: var(--weight-semibold); margin-bottom: var(--space-4); }
 .doc-body h3 { font-size: var(--text-lg); font-weight: var(--weight-medium); }
 .doc-h3 { font-size: var(--text-xl); margin-top: var(--space-6); }
-.doc-body section { scroll-margin-top: var(--space-8); }
+.doc-body section { scroll-margin-top: var(--space-8); min-width: 0; }
 .doc-body li { margin-bottom: var(--space-2); }
 .doc-muted { color: var(--color-text-muted); font-size: var(--text-sm); }
 .doc-body code { font-family: var(--font-mono); font-size: var(--text-sm); background: var(--color-surface-sunken); padding: 0 var(--space-1); border-radius: var(--radius-sm); }
@@ -41,5 +71,16 @@
 .doc-table th { background: var(--color-surface-sunken); color: var(--color-text-strong); text-align: left; font-weight: var(--weight-semibold); }
 .doc-table th, .doc-table td { padding: var(--space-3) var(--space-4); border-bottom: var(--border-width) solid var(--color-border); }
 
-@media (max-width: 1023px) { .doc-layout { grid-template-columns: minmax(0, 1fr); } .doc-toc { position: static; } }
-@media (max-width: 767px) { .doc-arch__row { grid-auto-flow: row; } .doc-pipe { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 1023px) {
+  .doc-layout { grid-template-columns: minmax(0, 1fr); width: 80%; }
+  .doc-toc { position: static; }
+  .doc-toc ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .doc-layout { width: 80%; gap: var(--space-4); }
+  .doc-toc ul { grid-template-columns: minmax(0, 1fr); }
+  .doc-body { gap: var(--space-4); }
+  .doc-body > header, .doc-body > section { padding: var(--space-4); }
+  .doc-arch__row { grid-auto-flow: row; }
+  .doc-pipe { grid-template-columns: minmax(0, 1fr); }
+}

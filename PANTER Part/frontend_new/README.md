@@ -1,32 +1,26 @@
-# React + TypeScript + Vite
+# Timetable Maker — UI prototype
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This folder contains a visual React + Vite prototype written in JavaScript. It uses sample timetable data and is
+not connected to the planned server, ingest, SQLite storage, or scheduling engine. Do not treat its sample values
+or simulated progress as real timetable results.
 
-Currently, two official plugins are available:
+The authoritative requirements are in `../../restart/`:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `README.md` and `tasks.md` define scope and task order.
+- `stack.md` defines the approved technology and forbids TypeScript.
+- `app/screens.md` and `app/routes.md` define the planned screens and API.
+- `shapes.md` defines shared input and output contracts.
+- `../Doc/DESIGN_SYSTEM.md` defines this prototype's visual system.
 
-## React Compiler
+## Commands
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```sh
+npm install
+npm run dev
+npm run build
+npm run lint
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Keep the prototype honest: disable controls that do not have a real action, and label any simulated behavior.
+Persistent application data belongs in the planned local server's `node:sqlite` database, not in browser
+`localStorage` or JSON files.
